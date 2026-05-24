@@ -618,7 +618,8 @@
                 <div class="about-me wrap" id="about">
                     <h2 class="about-me__title">关于我</h2>
                     <div class="about-me__content">
-                        
+                        1
+                    </div>
                 </div>
 
                 <!-- 代表作品模块 -->
@@ -734,7 +735,8 @@
                             <input type="email" class="form_input" placeholder="您的邮箱" name="email" required>
                         </div>
                         <div class="form_group">
-                            <textarea class="form_textarea" placeholder="请描述您的需求（官网/设计/开发）" name="message" required></textarea>
+                            <textarea class="form_textarea" placeholder="请描述您的需求（官网/设计/开发）" name="message"
+                                required></textarea>
                         </div>
                         <button type="submit" class="form_button">发送需求</button>
                         <div class="form_status" id="formStatus"></div>
@@ -846,7 +848,7 @@
             });
         })();
 
-        // 关闭作品详情函数
+        // 关闭作品详情
         function closeWorkDetail() {
             const detailOverlay = document.getElementById('work-detail-overlay');
             const detailContents = document.querySelectorAll('.detail-content');

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#1e2a1e"/>
+  <rect x="80" y="60" width="40" height="40" rx="4" fill="#c0c0c0"/>
+  <rect x="130" y="60" width="40" height="40" rx="4" fill="#e0e0e0"/>
+  <text x="150" y="88" text-anchor="middle" fill="#00f" font-size="16" font-weight="bold">3</text>
+  <rect x="180" y="60" width="40" height="40" rx="4" fill="#c0c0c0"/>
+  <rect x="230" y="60" width="40" height="40" rx="4" fill="#c0c0c0"/>
+  <rect x="130" y="110" width="40" height="40" rx="4" fill="#c0c0c0"/>
+  <rect x="180" y="110" width="40" height="40" rx="4" fill="#e0e0e0"/>
+  <text x="200" y="138" text-anchor="middle" fill="#f00" font-size="16">💣</text>
+  <rect x="80" y="160" width="40" height="40" rx="4" fill="#ffcc00"/>
+  <text x="100" y="188" text-anchor="middle" font-size="16">🚩</text>
+  <text x="200" y="260" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="bold">扫雷</text>
+  <text x="200" y="285" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="12" font-family="sans-serif">三种难度 右键插旗</text>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#1a2a3a"/>
+  <rect x="60" y="80" width="50" height="70" rx="5" fill="white" stroke="#ccc" stroke-width="1"/>
+  <text x="85" y="120" text-anchor="middle" fill="#e53935" font-size="20">♥K</text>
+  <rect x="120" y="80" width="50" height="70" rx="5" fill="#1e3a5f"/>
+  <rect x="180" y="95" width="50" height="70" rx="5" fill="white" stroke="#ccc" stroke-width="1"/>
+  <text x="205" y="135" text-anchor="middle" fill="#1a1a1a" font-size="20">♠Q</text>
+  <rect x="240" y="95" width="50" height="70" rx="5" fill="white" stroke="#ccc" stroke-width="1"/>
+  <text x="265" y="135" text-anchor="middle" fill="#e53935" font-size="20">♦10</text>
+  <text x="200" y="260" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="bold">蜘蛛纸牌</text>
+  <text x="200" y="285" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="12" font-family="sans-serif">104张牌 降序接龙</text>
+</svg>

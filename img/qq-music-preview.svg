@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#0d1b2a"/>
+  <circle cx="200" cy="120" r="60" fill="#2a2a4e" stroke="rgba(255,255,255,0.15)" stroke-width="3"/>
+  <text x="200" y="115" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="12" font-family="sans-serif">♪</text>
+  <text x="200" y="135" text-anchor="middle" fill="rgba(255,255,255,0.3)" font-size="20">🎵</text>
+  <rect x="100" y="220" width="200" height="4" rx="2" fill="rgba(255,255,255,0.1)"/>
+  <rect x="140" y="220" width="60" height="4" rx="2" fill="#00ff88"/>
+  <text x="200" y="265" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="bold">QQ音乐</text>
+  <text x="200" y="288" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="12" font-family="sans-serif">仿PC播放器 歌词同步</text>
+</svg>

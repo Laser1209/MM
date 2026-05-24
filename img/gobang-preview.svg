@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#2a2a1e"/>
+  <circle cx="80" cy="100" r="18" fill="#333"/>
+  <circle cx="160" cy="100" r="18" fill="#eee"/>
+  <circle cx="120" cy="180" r="18" fill="#333"/>
+  <circle cx="200" cy="140" r="4" fill="#ffd700"/>
+  <line x1="20" y1="80" x2="380" y2="80" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <line x1="80" y1="20" x2="80" y2="280" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <line x1="200" y1="20" x2="200" y2="280" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <line x1="320" y1="20" x2="320" y2="280" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <text x="200" y="260" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="bold">五子棋</text>
+  <text x="200" y="285" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="12" font-family="sans-serif">15×15 对战棋盘</text>
+</svg>

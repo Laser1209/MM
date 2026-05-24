@@ -53,11 +53,11 @@ const WorksData = {
                     {
                         id: "page-1",
                         title: "QQ音乐",
-                        thumbnail: "img/qq-music-preview.jpg",
+                        thumbnail: "img/qq-music-preview.svg",
                         tags: ["设计类型", "页面设计"],
                         description: "仿QQ音乐PC端播放器界面",
                         detailPage: "detail/page-1.html",
-                        externalLink: "program/qq-music/"
+                        externalLink: "program/qq-music.html"
                     },
                     {
                         id: "page-2",
@@ -144,20 +144,20 @@ const WorksData = {
             {
                 id: "game-1",
                 title: "贪吃蛇",
-                thumbnail: "img/snake-preview.jpg",
+                thumbnail: "img/snake-preview.svg",
                 tags: ["基础逻辑书写"],
                 description: "经典贪吃蛇游戏实现",
                 detailPage: "detail/game-1.html",
-                externalLink: "program/snake/"
+                externalLink: "program/snake.html"
             },
             {
                 id: "game-2",
                 title: "五子棋",
-                thumbnail: "img/gobang-preview.jpg",
+                thumbnail: "img/gobang-preview.svg",
                 tags: ["基础逻辑书写"],
                 description: "双人对战五子棋游戏",
                 detailPage: "detail/game-2.html",
-                externalLink: "program/gobang/"
+                externalLink: "program/gobang.html"
             },
             {
                 id: "game-3",
@@ -166,16 +166,16 @@ const WorksData = {
                 tags: ["基础逻辑书写"],
                 description: "经典扫雷游戏实现",
                 detailPage: "detail/game-3.html",
-                externalLink: "program/minesweeper/"
+                externalLink: "program/minesweeper.html"
             },
             {
                 id: "game-4",
                 title: "蜘蛛纸牌",
-                thumbnail: "img/spider-preview.jpg",
+                thumbnail: "img/spider-preview.svg",
                 tags: ["基础逻辑书写"],
                 description: "蜘蛛纸牌游戏实现",
                 detailPage: "detail/game-4.html",
-                externalLink: "program/spider-solitaire/"
+                externalLink: "program/spider-solitaire.html"
             },
             {
                 id: "game-5",
@@ -184,16 +184,16 @@ const WorksData = {
                 tags: ["基础逻辑书写"],
                 description: "跳一跳游戏实现",
                 detailPage: "detail/game-5.html",
-                externalLink: "program/threeKills/"
+                externalLink: "program/threeKills.html"
             },
             {
                 id: "game-6",
                 title: "魂斗罗",
-                thumbnail: "img/contra-preview.jpg",
+                thumbnail: "img/contra-preview.svg",
                 tags: ["基础逻辑书写"],
                 description: "经典魂斗罗游戏复刻",
                 detailPage: "detail/game-6.html",
-                externalLink: "program/contra/"
+                externalLink: "program/contra.html"
             }
         ]
     }

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#1a2a4e"/>
+  <rect x="10" y="10" width="16" height="16" rx="3" fill="#00ff88"/>
+  <rect x="40" y="10" width="16" height="16" rx="3" fill="#00ff88"/>
+  <rect x="70" y="10" width="16" height="16" rx="3" fill="#00ff88"/>
+  <rect x="40" y="40" width="16" height="16" rx="3" fill="#00cc6a"/>
+  <rect x="180" y="150" width="24" height="24" rx="6" fill="#00ff88" opacity="0.9"/>
+  <text x="200" y="260" text-anchor="middle" fill="white" font-size="28" font-family="sans-serif" font-weight="bold">贪吃蛇</text>
+  <text x="200" y="285" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-size="12" font-family="sans-serif">Canvas 经典游戏</text>
+</svg>
