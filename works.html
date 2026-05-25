@@ -519,6 +519,246 @@
                 bottom: 20px;
             }
         }
+
+        /* ========== 搜索系统样式 ========== */
+        .search-bar-area {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--background-light);
+            padding: 16px 60px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .search-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .search-input-wrapper {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--card-background);
+            border: 1.5px solid var(--border-color);
+            border-radius: 14px;
+            padding: 0 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .search-input-wrapper:focus-within {
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26,26,26,0.06);
+        }
+        .search-input-wrapper i {
+            color: var(--text-muted);
+            font-size: 16px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            padding: 13px 0;
+            background: transparent;
+            color: var(--text-primary);
+            font-family: 'Inter','Helvetica Neue',Arial,sans-serif;
+        }
+        .search-input::placeholder { color: var(--text-muted); }
+        .search-clear-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--card-background);
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            font-family: 'Inter','Helvetica Neue',Arial,sans-serif;
+        }
+        .search-clear-btn:hover { border-color: #1a1a1a; color: #1a1a1a; }
+
+        .search-history-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 6px;
+            background: var(--card-background);
+            border: 1.5px solid var(--border-color);
+            border-radius: 14px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            overflow: hidden;
+            display: none;
+            z-index: 100;
+        }
+        .search-history-dropdown.show { display: block; }
+        .search-history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .search-history-header button {
+            border: none;
+            background: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 12px;
+            transition: color 0.2s;
+        }
+        .search-history-header button:hover { color: #e94560; }
+        .search-history-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-primary);
+            transition: background 0.15s;
+        }
+        .search-history-item:hover { background: var(--border-light); }
+        .search-history-item i { color: var(--text-muted); font-size: 12px; }
+
+        .search-tags-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            scrollbar-width: none;
+        }
+        .search-tags-row::-webkit-scrollbar { display: none; }
+        .search-tags-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+        .search-tag-btn {
+            padding: 8px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 20px;
+            background: var(--card-background);
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-family: 'Inter','Helvetica Neue',Arial,sans-serif;
+        }
+        .search-tag-btn:hover { border-color: #1a1a1a; color: #1a1a1a; }
+        .search-tag-btn.active {
+            background: #1a1a1a;
+            color: #fff;
+            border-color: #1a1a1a;
+        }
+        .search-selected-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            min-height: 0;
+        }
+        .search-selected-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px 5px 14px;
+            background: #1a1a1a;
+            color: #fff;
+            border-radius: 18px;
+            font-size: 12px;
+            font-weight: 500;
+            animation: tagPopIn 0.2s ease;
+        }
+        @keyframes tagPopIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .search-selected-tag i {
+            cursor: pointer;
+            font-size: 11px;
+            opacity: 0.7;
+            transition: opacity 0.15s;
+        }
+        .search-selected-tag i:hover { opacity: 1; }
+
+        .search-result-count {
+            padding: 8px 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .search-result-count strong { color: var(--text-primary); }
+
+        .search-highlight-name { background: rgba(255,215,0,0.35); padding: 1px 4px; border-radius: 3px; }
+        .search-highlight-tag { background: rgba(26,26,26,0.1); padding: 1px 4px; border-radius: 3px; }
+        .search-highlight-type { background: rgba(115,115,115,0.15); padding: 1px 4px; border-radius: 3px; }
+
+        .search-results-section {
+            padding: 32px 60px;
+            display: none;
+            flex-direction: column;
+            height: calc(100vh - 56px);
+            overflow: hidden;
+        }
+        .search-results-section.active { display: flex; }
+        .search-results-scroll {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            overflow-y: auto;
+            padding: 16px 0 40px;
+            align-content: flex-start;
+        }
+        .search-results-scroll::-webkit-scrollbar { width: 6px; }
+        .search-results-scroll::-webkit-scrollbar-track { background: var(--border-light); border-radius: 3px; }
+        .search-results-scroll::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+
+        .search-empty {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            color: var(--text-muted);
+        }
+        .search-empty i { font-size: 48px; opacity: 0.3; }
+        .search-empty h3 { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+        .search-empty .suggested-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .search-empty .suggested-tags .search-tag-btn { font-size: 12px; }
+
+        .works-nav-link.search-active {
+            color: #ffffff !important;
+            background: rgba(255,255,255,0.15) !important;
+        }
+        .works-nav-link.search-active::before { transform: scaleY(1); }
+
+        @media (max-width: 768px) {
+            .search-bar-area { padding: 12px 16px; }
+            .search-results-section { padding: 20px 16px; height: calc(100vh - 46px); }
+            .search-results-scroll { gap: 16px; }
+            .search-results-scroll .work-card { width: calc(50vw - 32px); height: auto; min-height: 340px; }
+            .search-tags-row { gap: 6px; }
+            .search-tag-btn { padding: 6px 12px; font-size: 12px; }
+        }
     </style>
 </head>
 
@@ -573,6 +813,39 @@
         </nav>
 
         <main class="works-main">
+            <div class="search-bar-area" id="searchBarArea">
+                <div class="search-row">
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" class="search-input" id="searchInput" placeholder="搜索作品名称、类型或标签…（支持拼音）" autocomplete="off">
+                        <div class="search-selected-tags" id="selectedTagsContainer"></div>
+                        <div class="search-history-dropdown" id="searchHistoryDropdown">
+                            <div class="search-history-header">
+                                <span>最近搜索</span>
+                                <button type="button" id="clearHistoryBtn">清空记录</button>
+                            </div>
+                            <div id="searchHistoryList"></div>
+                        </div>
+                    </div>
+                    <button class="search-clear-btn" id="searchClearBtn" title="清除全部">
+                        <i class="fa-solid fa-xmark"></i> 清除
+                    </button>
+                </div>
+                <div class="search-tags-row" id="searchTagsRow">
+                    <span class="search-tags-label">筛选标签：</span>
+                    <button class="search-tag-btn" data-tag="海报设计">海报设计</button>
+                    <button class="search-tag-btn" data-tag="页面设计">页面设计</button>
+                    <button class="search-tag-btn" data-tag="视频剪辑">视频剪辑</button>
+                    <button class="search-tag-btn" data-tag="AIGC">AIGC</button>
+                    <button class="search-tag-btn" data-tag="三维建模">三维建模</button>
+                    <button class="search-tag-btn" data-tag="基础逻辑书写">基础逻辑书写</button>
+                    <button class="search-tag-btn" data-tag="设计类型">设计类型</button>
+                </div>
+            </div>
+            <section class="search-results-section" id="searchResultsSection">
+                <div class="search-result-count" id="searchResultCount"></div>
+                <div class="search-results-scroll" id="searchResultsScroll"></div>
+            </section>
             <section class="category-section active" id="graphicDesign-section">
                 <div class="category-header">
                     <h2 class="category-title">平面设计</h2>
@@ -671,6 +944,7 @@
             initCategoryNavigation();
             initHorizontalScroll();
             loadWorksData();
+            initSearchSystem();
         });
 
         function initCustomCursor() {
@@ -747,31 +1021,100 @@
         }
 
         function initCategoryNavigation() {
-            const navLinks = document.querySelectorAll('.works-nav-link[data-category]');
-            const sections = document.querySelectorAll('.category-section');
-            const subcategoryLists = document.querySelectorAll('.subcategory-list');
+            var navLinks = document.querySelectorAll('.works-nav-link[data-category]');
+            var subLinks = document.querySelectorAll('.works-nav-link[data-subcategory]');
+            var sections = document.querySelectorAll('.category-section');
 
-            navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
+            navLinks.forEach(function (link) {
+                link.addEventListener('click', function (e) {
                     e.preventDefault();
-                    const category = link.dataset.category;
-
-                    navLinks.forEach(l => l.classList.remove('active'));
+                    var category = link.dataset.category;
+                    navLinks.forEach(function (l) { l.classList.remove('active'); });
                     link.classList.add('active');
+                    subLinks.forEach(function (l) { l.classList.remove('active'); });
 
-                    const subList = link.nextElementSibling;
-                    if (subList && subList.classList.contains('subcategory-list')) {
-                        subList.classList.toggle('expanded');
-                    }
+                    sections.forEach(function (s) { s.classList.remove('active'); });
+                    var section = document.getElementById(category + '-section');
+                    if (!section) return;
+                    section.classList.add('active');
 
-                    sections.forEach(section => section.classList.remove('active'));
-                    const targetSection = document.getElementById(`${category}-section`);
-                    if (targetSection) {
-                        targetSection.classList.add('active');
-                        animateSectionContent(targetSection);
-                    }
+                    var titleEl = section.querySelector('.category-title');
+                    var descEl = section.querySelector('.category-description');
+                    if (titleEl && titleEl.dataset.originalTitle) titleEl.textContent = titleEl.dataset.originalTitle;
+                    if (descEl && descEl.dataset.originalDesc) descEl.textContent = descEl.dataset.originalDesc;
+
+                    loadAllWorksForSection(category);
+                    animateSectionContent(section);
                 });
             });
+
+            subLinks.forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var subKey = link.dataset.subcategory;
+                    navLinks.forEach(function (l) { l.classList.remove('active'); });
+                    subLinks.forEach(function (l) { l.classList.remove('active'); });
+                    link.classList.add('active');
+
+                    var parentCategory = getParentCategory(subKey);
+                    if (!parentCategory) return;
+
+                    var parentLink = document.querySelector('.works-nav-link[data-category="' + parentCategory + '"]');
+                    if (parentLink) parentLink.classList.add('active');
+
+                    sections.forEach(function (s) { s.classList.remove('active'); });
+                    var section = document.getElementById(parentCategory + '-section');
+                    if (!section) return;
+                    section.classList.add('active');
+
+                    var subData = getSubcategoryData(parentCategory, subKey);
+                    var titleEl = section.querySelector('.category-title');
+                    var descEl = section.querySelector('.category-description');
+                    if (titleEl) {
+                        if (!titleEl.dataset.originalTitle) titleEl.dataset.originalTitle = titleEl.textContent;
+                        titleEl.textContent = subData.title;
+                    }
+                    if (descEl) {
+                        if (!descEl.dataset.originalDesc) descEl.dataset.originalDesc = descEl.textContent;
+                        descEl.textContent = subData.description;
+                    }
+
+                    loadSubcategoryWorks(parentCategory, subData.works);
+                    animateSectionContent(section);
+                });
+            });
+        }
+
+        function getParentCategory(subKey) {
+            var map = { posterDesign: 'graphicDesign', pageDesign: 'graphicDesign', fastTrailers: 'videoEditing', aigc: 'videoEditing' };
+            return map[subKey] || null;
+        }
+
+        function getSubcategoryData(parentCategory, subKey) {
+            var data = WorksData[parentCategory];
+            if (data && data.categories && data.categories[subKey]) {
+                var cat = data.categories[subKey];
+                return { title: cat.title, description: cat.title + '作品集', works: cat.works };
+            }
+            return { title: '', description: '', works: [] };
+        }
+
+        function loadAllWorksForSection(category) {
+            var works = [];
+            if (category === 'graphicDesign') {
+                works = WorksData.graphicDesign.categories.posterDesign.works
+                    .concat(WorksData.graphicDesign.categories.pageDesign.works);
+            } else if (category === 'videoEditing') {
+                works = WorksData.videoEditing.categories.fastTrailers.works
+                    .concat(WorksData.videoEditing.categories.aigc.works);
+            } else if (WorksData[category] && WorksData[category].works) {
+                works = WorksData[category].works;
+            }
+            renderWorks(category + '-works', works);
+        }
+
+        function loadSubcategoryWorks(parentCategory, works) {
+            renderWorks(parentCategory + '-works', works);
         }
 
         function animateSectionContent(section) {
@@ -950,6 +1293,385 @@
             }
 
             return card;
+        }
+
+        // ===================== 搜索系统 =====================
+
+        function flattenAllWorks() {
+            var all = [];
+            function pushWorks(works, categoryTitle, subcategoryTitle) {
+                works.forEach(function (w) {
+                    all.push({
+                        id: w.id, title: w.title, thumbnail: w.thumbnail,
+                        tags: w.tags, description: w.description,
+                        detailPage: w.detailPage, externalLink: w.externalLink,
+                        isPlaceholder: w.isPlaceholder,
+                        categoryTitle: categoryTitle,
+                        subcategoryTitle: subcategoryTitle || ''
+                    });
+                });
+            }
+            var gd = WorksData.graphicDesign;
+            if (gd && gd.categories) {
+                if (gd.categories.posterDesign) pushWorks(gd.categories.posterDesign.works, gd.title, gd.categories.posterDesign.title);
+                if (gd.categories.pageDesign) pushWorks(gd.categories.pageDesign.works, gd.title, gd.categories.pageDesign.title);
+            }
+            var ve = WorksData.videoEditing;
+            if (ve && ve.categories) {
+                if (ve.categories.fastTrailers) pushWorks(ve.categories.fastTrailers.works, ve.title, ve.categories.fastTrailers.title);
+                if (ve.categories.aigc) pushWorks(ve.categories.aigc.works, ve.title, ve.categories.aigc.title);
+            }
+            if (WorksData.modeling3d && WorksData.modeling3d.works) pushWorks(WorksData.modeling3d.works, WorksData.modeling3d.title, '');
+            if (WorksData.basicLogic && WorksData.basicLogic.works) pushWorks(WorksData.basicLogic.works, WorksData.basicLogic.title, '');
+            return all;
+        }
+
+        var pinyinMap = {
+            '你':'ni','为':'wei','盛':'sheng','开':'kai','演':'yan','唱':'chang','会':'hui','纪':'ji','念':'nian',
+            '奇':'qi','迹':'ji','航':'hang','线':'xian','守':'shou','候':'hou','得':'de','闲':'xian','谨':'jin','制':'zhi',
+            '以':'yi','手':'shou','造':'zao','物':'wu','文':'wen','传':'chuan','心':'xin',
+            '墨':'mo','缘':'yuan','音':'yin','乐':'yue','协':'xie',
+            '古':'gu','风':'feng','博':'bo','馆':'guan','展':'zhan','览':'lan','海':'hai','报':'bao',
+            '我':'wo','们':'men','都':'dou','在':'zai','过':'guo','家':'jia',
+            '白':'bai','色':'se','定':'ding','格':'ge','替':'ti','去':'qu','看':'kan','世':'shi','界':'jie',
+            '游':'you','戏':'xi','角':'jiao','斯':'si','卡':'ka','蒂':'di','贪':'tan','吃':'chi','蛇':'she',
+            '五':'wu','子':'zi','棋':'qi','扫':'sao','雷':'lei','蜘':'zhi','蛛':'zhu','纸':'zhi','牌':'pai',
+            '跳':'tiao','一':'yi','魂':'hun','斗':'dou','罗':'luo',
+            '三':'san','消':'xiao','Q':'q','音':'yin','乐':'yue'
+        };
+
+        function charToPinyin(ch) {
+            if (!ch) return '';
+            if (/[a-zA-Z0-9]/.test(ch)) return ch.toLowerCase();
+            return pinyinMap[ch] || '';
+        }
+
+        function toPinyin(str) {
+            if (!str) return '';
+            var result = '';
+            for (var i = 0; i < str.length; i++) {
+                result += charToPinyin(str[i]) || str[i];
+            }
+            return result;
+        }
+
+        function toPinyinInitials(str) {
+            if (!str) return '';
+            var result = '';
+            for (var i = 0; i < str.length; i++) {
+                var py = charToPinyin(str[i]);
+                result += py ? py[0] : str[i];
+            }
+            return result;
+        }
+
+        function matchFuzzy(text, query) {
+            if (!query || !text) return false;
+            var t = text.toLowerCase();
+            var q = query.toLowerCase();
+            if (t.indexOf(q) !== -1) return true;
+            var py = toPinyin(text).toLowerCase();
+            if (py.indexOf(q) !== -1) return true;
+            var initials = toPinyinInitials(text).toLowerCase();
+            if (initials.indexOf(q) !== -1) return true;
+            return false;
+        }
+
+        function highlightText(text, query) {
+            if (!query || !text) return text;
+            var q = query.toLowerCase();
+            var t = text;
+            var idx = t.toLowerCase().indexOf(q);
+            if (idx !== -1) {
+                return t.substring(0, idx) + '<span class="search-highlight-name">' + t.substring(idx, idx + q.length) + '</span>' + t.substring(idx + q.length);
+            }
+            var py = toPinyin(t).toLowerCase();
+            var pyIdx = py.indexOf(q);
+            if (pyIdx !== -1) {
+                var origIdx = 0, pyPos = 0;
+                for (var i = 0; i < t.length; i++) {
+                    var cp = charToPinyin(t[i]);
+                    if (!cp) continue;
+                    if (pyPos === pyIdx) { origIdx = i; break; }
+                    pyPos += cp.length;
+                }
+                var hlLen = 1;
+                pyPos = 0;
+                for (var i = origIdx; i < t.length; i++) {
+                    var cp = charToPinyin(t[i]);
+                    if (!cp) { hlLen++; continue; }
+                    if (pyPos + cp.length > q.length) break;
+                    hlLen = i - origIdx + 1;
+                    pyPos += cp.length;
+                    if (pyPos >= q.length) break;
+                }
+                return t.substring(0, origIdx) + '<span class="search-highlight-name">' + t.substring(origIdx, origIdx + hlLen) + '</span>' + t.substring(origIdx + hlLen);
+            }
+            var ini = toPinyinInitials(t).toLowerCase();
+            var iniIdx = ini.indexOf(q);
+            if (iniIdx !== -1) {
+                return t.substring(0, iniIdx) + '<span class="search-highlight-name">' + t.substring(iniIdx, iniIdx + q.length) + '</span>' + t.substring(iniIdx + q.length);
+            }
+            return text;
+        }
+
+        var selectedTags = [];
+        var allWorksCache = null;
+
+        function getSearchKeywords(query) {
+            if (!query) return [];
+            return query.trim().split(/\s+/).filter(function (k) { return k.length > 0; });
+        }
+
+        function performSearch(query) {
+            if (!allWorksCache) allWorksCache = flattenAllWorks();
+            var keywords = getSearchKeywords(query);
+            var results = allWorksCache.filter(function (work) {
+                if (work.isPlaceholder) return false;
+                var matchType = false;
+                if (keywords.length > 0) {
+                    matchType = keywords.some(function (kw) {
+                        return matchFuzzy(work.title, kw) || matchFuzzy(work.description, kw) || matchFuzzy(work.categoryTitle, kw) || matchFuzzy(work.subcategoryTitle, kw);
+                    });
+                    if (!matchType) return false;
+                }
+                if (selectedTags.length > 0) {
+                    var tagMatch = selectedTags.every(function (st) {
+                        return work.tags.indexOf(st) !== -1 || work.categoryTitle === st || work.subcategoryTitle === st;
+                    });
+                    if (!tagMatch) return false;
+                }
+                return true;
+            });
+            if (keywords.length === 0 && selectedTags.length === 0) {
+                clearSearch();
+                return;
+            }
+            renderSearchResults(results, query);
+        }
+
+        function renderSearchResults(results, query) {
+            var section = document.getElementById('searchResultsSection');
+            var scroll = document.getElementById('searchResultsScroll');
+            var countEl = document.getElementById('searchResultCount');
+            var categorySections = document.querySelectorAll('.category-section');
+
+            categorySections.forEach(function (s) { s.classList.remove('active'); });
+            section.classList.add('active');
+            scroll.innerHTML = '';
+
+            if (results.length === 0) {
+                countEl.innerHTML = '';
+                var emptyDiv = document.createElement('div');
+                emptyDiv.className = 'search-empty';
+                emptyDiv.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i><h3>未找到匹配作品</h3><p>试试其他关键词或标签吧</p><div class="suggested-tags">' + ['海报设计','页面设计','AIGC','基础逻辑书写','贪吃蛇','QQ音乐'].map(function(t){return '<button class="search-tag-btn" data-tag="'+t+'">'+t+'</button>';}).join('') + '</div>';
+                scroll.appendChild(emptyDiv);
+                emptyDiv.querySelectorAll('.search-tag-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () { addTag(btn.dataset.tag); });
+                });
+                return;
+            }
+
+            countEl.innerHTML = '找到 <strong>' + results.length + '</strong> 个匹配作品';
+            results.forEach(function (work, idx) {
+                var titleHl = highlightText(work.title, document.getElementById('searchInput').value || '');
+                var descHl = highlightText(work.description, document.getElementById('searchInput').value || '');
+                var card = document.createElement('div');
+                card.className = 'work-card';
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(24px)';
+                card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                card.style.transitionDelay = (idx * 0.05) + 's';
+                card.innerHTML = '<div class="work-card-image">' +
+                    (work.thumbnail ? '<img src="' + work.thumbnail + '" alt="' + work.title + '">' : '<div class="work-card-no-image">暂无图片</div>') +
+                    '<div class="work-card-overlay"><span class="view-detail-btn">查看详情</span></div></div>' +
+                    '<div class="work-card-info"><h4>' + titleHl + '</h4><p>' + descHl + '</p>' +
+                    '<div class="work-tags">' + work.tags.map(function(t){return '<span class="work-tag">'+t+'</span>';}).join('') + '</div></div>';
+                var imgEl = card.querySelector('.work-card-image img');
+                if (imgEl) {
+                    imgEl.addEventListener('error', function(){
+                        imgEl.parentElement.innerHTML = '<div class="work-card-no-image">暂无图片</div>';
+                    });
+                }
+                card.addEventListener('click', function () {
+                    if (work.externalLink) window.open(work.externalLink, '_blank');
+                    else if (work.detailPage) window.location.href = work.detailPage;
+                });
+                scroll.appendChild(card);
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    });
+                });
+            });
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            selectedTags = [];
+            updateTagUI();
+            document.getElementById('searchResultsSection').classList.remove('active');
+            document.querySelectorAll('.category-section').forEach(function (s) { s.classList.remove('active'); });
+            var activeSection = document.getElementById('graphicDesign-section');
+            if (activeSection) {
+                activeSection.classList.add('active');
+                var titleEl = activeSection.querySelector('.category-title');
+                var descEl = activeSection.querySelector('.category-description');
+                if (titleEl && titleEl.dataset.originalTitle) titleEl.textContent = titleEl.dataset.originalTitle;
+                if (descEl && descEl.dataset.originalDesc) descEl.textContent = descEl.dataset.originalDesc;
+                loadAllWorksForSection('graphicDesign');
+            }
+            document.querySelectorAll('.works-nav-link[data-category]').forEach(function (l) { l.classList.remove('active'); });
+            document.querySelectorAll('.works-nav-link[data-subcategory]').forEach(function (l) { l.classList.remove('active'); });
+            var firstLink = document.querySelector('.works-nav-link[data-category="graphicDesign"]');
+            if (firstLink) firstLink.classList.add('active');
+            document.getElementById('searchResultCount').innerHTML = '';
+        }
+
+        function addTag(tag) {
+            if (selectedTags.indexOf(tag) !== -1) return;
+            selectedTags.push(tag);
+            updateTagUI();
+            var query = document.getElementById('searchInput').value;
+            if (query || selectedTags.length > 0) performSearch(query);
+        }
+
+        function removeTag(tag) {
+            selectedTags = selectedTags.filter(function (t) { return t !== tag; });
+            updateTagUI();
+            var query = document.getElementById('searchInput').value;
+            if (query || selectedTags.length > 0) { performSearch(query); } else { clearSearch(); }
+        }
+
+        function updateTagUI() {
+            var container = document.getElementById('selectedTagsContainer');
+            container.innerHTML = '';
+            selectedTags.forEach(function (tag) {
+                var pill = document.createElement('span');
+                pill.className = 'search-selected-tag';
+                pill.innerHTML = tag + ' <i class="fa-solid fa-xmark"></i>';
+                pill.querySelector('i').addEventListener('click', function (e) { e.stopPropagation(); removeTag(tag); });
+                container.appendChild(pill);
+            });
+            document.querySelectorAll('.search-tag-btn').forEach(function (btn) {
+                btn.classList.toggle('active', selectedTags.indexOf(btn.dataset.tag) !== -1);
+            });
+            syncLeftNav();
+        }
+
+        function syncLeftNav() {
+            document.querySelectorAll('.works-nav-link').forEach(function (link) { link.classList.remove('search-active'); });
+            if (selectedTags.length === 0) return;
+            var categoryMap = { '海报设计':'graphicDesign','页面设计':'graphicDesign','视频剪辑':'videoEditing','AIGC':'videoEditing','三维建模':'modeling3d','基础逻辑书写':'basicLogic','设计类型':null };
+            var subMap = { '海报设计':'posterDesign','页面设计':'pageDesign','AIGC':'aigc' };
+            var matchedCategories = {};
+            selectedTags.forEach(function (tag) {
+                var cat = categoryMap[tag];
+                if (cat) matchedCategories[cat] = true;
+                var sub = subMap[tag];
+                if (sub) matchedCategories[sub] = true;
+            });
+            document.querySelectorAll('.works-nav-link[data-category]').forEach(function (link) {
+                if (matchedCategories[link.dataset.category]) link.classList.add('search-active');
+            });
+            document.querySelectorAll('.works-nav-link[data-subcategory]').forEach(function (link) {
+                if (matchedCategories[link.dataset.subcategory]) link.classList.add('search-active');
+            });
+        }
+
+        function getSearchHistory() {
+            try { return JSON.parse(localStorage.getItem('portfolio_search_history') || '[]'); } catch(e) { return []; }
+        }
+
+        function saveSearchHistory(query) {
+            if (!query || !query.trim()) return;
+            var q = query.trim();
+            var history = getSearchHistory().filter(function (h) { return h !== q; });
+            history.unshift(q);
+            history = history.slice(0, 10);
+            try { localStorage.setItem('portfolio_search_history', JSON.stringify(history)); } catch(e) {}
+        }
+
+        function renderSearchHistory() {
+            var list = document.getElementById('searchHistoryList');
+            var history = getSearchHistory();
+            if (history.length === 0) { list.innerHTML = '<div style="padding:10px 16px;color:var(--text-muted);font-size:13px;">暂无搜索记录</div>'; return; }
+            list.innerHTML = history.map(function (h) {
+                return '<div class="search-history-item"><i class="fa-solid fa-clock-rotate-left"></i><span>' + h + '</span></div>';
+            }).join('');
+            list.querySelectorAll('.search-history-item').forEach(function (item) {
+                item.addEventListener('click', function () {
+                    var q = item.querySelector('span').textContent;
+                    document.getElementById('searchInput').value = q;
+                    document.getElementById('searchHistoryDropdown').classList.remove('show');
+                    saveSearchHistory(q);
+                    performSearch(q);
+                });
+            });
+        }
+
+        var searchDebounceTimer = null;
+
+        function initSearchSystem() {
+            var input = document.getElementById('searchInput');
+            var dropdown = document.getElementById('searchHistoryDropdown');
+            var clearBtn = document.getElementById('searchClearBtn');
+            var clearHistBtn = document.getElementById('clearHistoryBtn');
+
+            input.addEventListener('input', function () {
+                if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+                searchDebounceTimer = setTimeout(function () {
+                    performSearch(input.value);
+                }, 300);
+            });
+
+            input.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+                    performSearch(input.value);
+                    if (input.value.trim()) saveSearchHistory(input.value.trim());
+                }
+                if (e.key === 'Escape') { clearSearch(); dropdown.classList.remove('show'); }
+            });
+
+            input.addEventListener('focus', function () {
+                renderSearchHistory();
+                if (getSearchHistory().length > 0) dropdown.classList.add('show');
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.search-input-wrapper')) dropdown.classList.remove('show');
+            });
+
+            clearBtn.addEventListener('click', function () {
+                clearSearch();
+                dropdown.classList.remove('show');
+            });
+
+            clearHistBtn.addEventListener('click', function () {
+                localStorage.removeItem('portfolio_search_history');
+                renderSearchHistory();
+                dropdown.classList.remove('show');
+            });
+
+            document.querySelectorAll('.search-tag-btn[data-tag]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var tag = btn.dataset.tag;
+                    if (selectedTags.indexOf(tag) !== -1) removeTag(tag);
+                    else addTag(tag);
+                });
+            });
+
+            document.querySelectorAll('.works-nav-link[data-category], .works-nav-link[data-subcategory]').forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    document.getElementById('searchInput').value = '';
+                    selectedTags = [];
+                    updateTagUI();
+                    document.getElementById('searchResultsSection').classList.remove('active');
+                    document.getElementById('searchResultCount').innerHTML = '';
+                });
+            });
         }
     </script>
 </body>

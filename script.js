@@ -1052,88 +1052,17 @@ function enhanceWorkItemEffects() {
 
 // ========== Hero标题动画 ==========
 function animateHeroTitle() {
-    const heroWords = document.querySelectorAll('.hero-word');
-    heroWords.forEach((word, index) => {
-        // 拆分单词为单个字符
-        const text = word.textContent;
-        word.textContent = '';
-        for (let i = 0; i < text.length; i++) {
-            const char = document.createElement('span');
-            char.textContent = text[i];
-            char.style.display = 'inline-block';
-            char.style.opacity = '0';
-            char.style.transform = 'translateY(20px)';
-            char.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            char.style.transitionDelay = `${index * 0.3 + i * 0.1}s`;
-            word.appendChild(char);
-        }
-        
-        // 触发动画
-        setTimeout(() => {
-            const chars = word.querySelectorAll('span');
-            chars.forEach(char => {
-                char.style.opacity = '1';
-                char.style.transform = 'translateY(0)';
-            });
-        }, 1000);
-    });
-    
-    // 为分隔符添加动画
-    const separator = document.querySelector('.separator');
-    if (separator) {
-        separator.style.opacity = '0';
-        separator.style.transform = 'scale(0)';
-        separator.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        setTimeout(() => {
-            separator.style.opacity = '1';
-            separator.style.transform = 'scale(1)';
-        }, 1800);
-    }
-    
-    // 添加颜色渐变动画
-    const heroTitle = document.querySelector('.hero_title h1');
-    if (heroTitle) {
-        let hue = 0;
-        setInterval(() => {
-            hue = (hue + 1) % 360;
-            heroTitle.style.background = `linear-gradient(135deg, hsl(${hue}, 70%, 50%), hsl(${(hue + 60) % 360}, 70%, 50%))`;
-            heroTitle.style.webkitBackgroundClip = 'text';
-            heroTitle.style.webkitTextFillColor = 'transparent';
-            heroTitle.style.backgroundClip = 'text';
-        }, 200);
-    }
+    var heroTitleSection = document.querySelector('.hero_title');
+    if (!heroTitleSection) return;
+    heroTitleSection.style.opacity = '0';
+    heroTitleSection.style.transform = 'translateY(30px)';
+    heroTitleSection.style.transition = 'opacity 1s ease, transform 1s ease';
+    setTimeout(function () {
+        heroTitleSection.style.opacity = '1';
+        heroTitleSection.style.transform = 'translateY(0)';
+    }, 600);
 }
 
-// ========== 二进制文本动画 ==========
-function animateBinaryText() {
-    const binaryChars = document.querySelectorAll('.binary-char');
-    
-    // 字符闪烁效果
-    binaryChars.forEach((char, index) => {
-        setInterval(() => {
-            if (Math.random() > 0.95) {
-                char.style.opacity = '0.3';
-                setTimeout(() => {
-                    char.style.opacity = '1';
-                }, 200);
-            }
-        }, 500 + index * 50);
-    });
-    
-    // 字符颜色变化效果
-    let hue = 0;
-    setInterval(() => {
-        hue = (hue + 1) % 360;
-        binaryChars.forEach((char, index) => {
-            if (Math.random() > 0.7) {
-                char.style.color = `hsl(${hue}, 70%, 50%)`;
-                setTimeout(() => {
-                    char.style.color = 'rgba(102, 126, 234, 0.6)';
-                }, 300);
-            }
-        });
-    }, 1000);
-}
 
 // ========== 导航栏滚动效果 ==========
 function initNavbarScroll() {
@@ -1162,7 +1091,6 @@ window.addEventListener('load', () => {
     enhanceWaveEffect();
     enhanceWorkItemEffects();
     animateHeroTitle();
-    animateBinaryText();
     initContactForm();
 });
 
