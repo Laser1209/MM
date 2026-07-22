@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T01:47:47.992Z",
+  "generatedAt": "2026-07-22T02:06:11.092Z",
   "programs": [
     "program/contra.html",
     "program/gobang.html",
@@ -26,18 +26,12 @@
     "img/snake-preview.svg",
     "img/spider-preview.svg",
     "img/threeKills-preview.svg",
-    "img/为你盛开——许巍《无尽光芒》巡回演唱会现场纪念（视听版）.jpg",
     "img/以手造物 以文传心.png",
     "img/以手造物.png",
     "img/墨缘音乐协会-KT板.png",
-    "img/奇迹航线.jpg",
-    "img/守候.jpg",
     "img/工作流-each-rich.png",
-    "img/得闲谨制.jpg",
-    "img/我们都在过家家.jpg",
     "img/效果图—desktop.jpg",
     "img/效果图—mobile.jpg",
-    "img/白色定格 (Eternal White).jpg",
     "img/黄褐色古风中式人文博物馆展览海报.pdf"
   ],
   "videos": [
@@ -86,7 +80,7 @@
   ],
   "summary": {
     "totalPrograms": 7,
-    "totalImages": 29,
+    "totalImages": 23,
     "totalVideos": 2,
     "totalDetails": 24,
     "totalArt": 4,
