@@ -1,0 +1,125 @@
+/* ========== Intro Scene Styles (Prompt A) ========== */
+
+/* Liquid Glass Card */
+.liquid-glass-card {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.01);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Liquid glass border via ::before pseudo-element */
+.liquid-glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1.4px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.05));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.liquid-glass-card .lg-year {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 2px;
+}
+
+.liquid-glass-card .lg-headline {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.95);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.liquid-glass-card .lg-desc {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  line-height: 1.5;
+}
+
+/* Navbar loading text marquee */
+.nav-loading-text {
+  position: relative;
+  height: 20px;
+  overflow: hidden;
+}
+
+.nav-loading-text .nav-loading-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  letter-spacing: 0.5px;
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  transform: translateY(100%);
+}
+
+.nav-loading-text .nav-loading-item.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.nav-loading-text .nav-loading-item.exit {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+/* Binary stream */
+.binary-stream {
+  overflow: hidden;
+  white-space: nowrap;
+  font-family: 'Courier New', monospace;
+  font-size: 10px;
+  color: rgba(94, 210, 156, 0.15);
+  letter-spacing: 2px;
+}
+
+.binary-stream-inner {
+  display: inline-block;
+  animation: binaryScroll 60s linear infinite;
+}
+
+@keyframes binaryScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  animation: scrollBounce 2s ease-in-out infinite;
+}
+
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+
+/* Floating label hover effect */
+.floating-label {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.floating-label:hover {
+  color: #5ed29c;
+  transform: translateY(-2px);
+}

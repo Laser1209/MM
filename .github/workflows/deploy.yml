@@ -26,16 +26,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci || npm install
+
       - name: Inject AI Config
         run: |
-          cat > ai-config.js << 'CONFIG_EOF'
-          var __AI_CHAT_CONFIG__ = {
-              apiUrl: 'https://api.deepseek.com/chat/completions',
-              apiKey: '${{ secrets.DEEPSEEK_API_KEY }}',
-              model: 'deepseek-chat'
-          };
+          cat > src/config/aiConfig.js << 'CONFIG_EOF'
+          export const AI_CONFIG = {
+            apiUrl: 'https://api.deepseek.com/chat/completions',
+            apiKey: '${{ secrets.DEEPSEEK_API_KEY }}',
+            model: 'deepseek-chat',
+          }
           CONFIG_EOF
-          echo "[OK] ai-config.js generated"
+          echo "[OK] src/config/aiConfig.js generated"
+
+      - name: Build
+        run: npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -43,7 +55,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: './dist'
 
       - name: Deploy to GitHub Pages
         id: deployment

@@ -41,3 +41,7 @@ logs/
 
 # AI config (contains API key - DO NOT commit)
 ai-config.js
+src/config/aiConfig.js
+
+# Vite
+.vite/
