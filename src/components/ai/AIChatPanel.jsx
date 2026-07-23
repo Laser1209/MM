@@ -16,7 +16,7 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
   const [messages, setMessages] = useLocalStorage('etta-chat-history', [
     {
       role: 'assistant',
-      content: '你好，我是 Etta，欢迎来到我的个人作品集。这里收录了我的平面设计、视频剪辑、三维建模和小游戏开发作品——你可以点击导航栏的 Works 浏览全部。有什么想了解的？',
+      content: '你好，我是 Etta，欢迎来到我主人的个人作品集。这里收录了我主人的平面设计、视频剪辑、三维建模和小游戏开发作品——你可以点击导航栏的 Works 浏览全部。有什么想了解的？',
     },
   ])
   const messagesEndRef = useRef(null)

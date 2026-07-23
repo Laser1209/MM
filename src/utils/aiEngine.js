@@ -108,7 +108,7 @@ export class AIEngine {
       return '我有平面设计（海报、页面）、视频剪辑（AIGC短片）、三维建模（角色渲染）和6款小游戏（贪吃蛇、五子棋、扫雷等）作品。请在导航栏点击 Works 查看全部！'
     }
     if (msg.includes('游戏') || msg.includes('玩')) {
-      return '我有6款小游戏可以直接在浏览器玩：贪吃蛇、五子棋、扫雷、蜘蛛纸牌、跳一跳、魂斗罗。前往 Works 页面找到基础逻辑分类即可体验！'
+      return '这里有6款小游戏可以直接在浏览器玩：贪吃蛇、五子棋、扫雷、蜘蛛纸牌、跳一跳、魂斗罗。前往 Works 页面找到基础逻辑分类即可体验！'
     }
     if (msg.includes('联系') || msg.includes('合作') || msg.includes('微信')) {
       return '您可以通过点击导航栏右侧的"Hire me"按钮扫描我的微信二维码，或发送邮件到 etta120913@gmail.com 联系我。期待与您的合作！'
@@ -116,11 +116,12 @@ export class AIEngine {
     if (msg.includes('网站') || msg.includes('谁做')) {
       return '这个网站是由 Laser（伊泽）用 React + Vite + Tailwind CSS 精心搭建的，是他送给我的作品集礼物。'
     }
+    // Add "主人" to the greeting
     if (msg.includes('你好') || msg.includes('hi') || msg.includes('hello')) {
-      return '你好！我是 Etta，欢迎来到我的个人作品集。有什么想了解的？'
+      return '你好！我是 Etta，欢迎来到我的主人的个人作品集。有什么想了解的？'
     }
 
-    return '感谢您的留言！AI对话功能正在配置中，暂时无法实时回复。您可以浏览我的作品，或通过微信/邮箱联系我。'
+    return '感谢您的留言！AI对话功能正在配置中，暂时无法实时回复。您可以浏览我的主人的作品，或通过微信/邮箱联系我。'
   }
 
   /**

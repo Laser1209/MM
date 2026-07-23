@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T02:06:11.092Z",
+  "generatedAt": "2026-07-23T11:24:41.815Z",
   "programs": [
     "program/contra.html",
     "program/gobang.html",
@@ -18,7 +18,12 @@
     "img/contra-preview.svg",
     "img/Etta.png",
     "img/gobang-preview.svg",
+    "img/haidai-preview.pdf",
+    "img/haidai-preview.png",
+    "img/jijiu-preview.jpg",
     "img/minesweeper-preview.svg",
+    "img/ningyun-preview.png",
+    "img/qingyin-preview.png",
     "img/qq-music-preview.svg",
     "img/QR.png",
     "img/Restyled Page Minimalist CC Brand Website.png",
@@ -26,6 +31,7 @@
     "img/snake-preview.svg",
     "img/spider-preview.svg",
     "img/threeKills-preview.svg",
+    "img/yunshen-preview.jpg",
     "img/以手造物 以文传心.png",
     "img/以手造物.png",
     "img/墨缘音乐协会-KT板.png",
@@ -80,7 +86,7 @@
   ],
   "summary": {
     "totalPrograms": 7,
-    "totalImages": 23,
+    "totalImages": 29,
     "totalVideos": 2,
     "totalDetails": 24,
     "totalArt": 4,

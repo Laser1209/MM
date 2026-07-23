@@ -33,6 +33,68 @@ export const WORK_METADATA = [
       'img/braintoss-current.png',
     ],
   },
+  {
+    id: 'ai-ningsheng',
+    title: '非遗声境',
+    description: '以声音为媒介的非遗沉浸式在线教育平台——覆盖中国十大非遗门类，提供声景沉浸、体系课程、互动听音辨艺三大核心体验。基于 React 19 + TypeScript + Vite 构建，集成 Framer Motion 动效与 Zustand 状态管理，支持多音轨同时播放、AI 视频生成（Seedance），包含 10 项非遗内容、4 门课程、12 组声景音源。全栈前端 SPA，响应式设计，中文文化主题配色体系。',
+    category: 'aiDev',
+    subcategory: 'webapp',
+    thumbnail: 'img/ningyun-preview.png',
+    previewUrl: '',
+    externalLink: '',
+    isExternal: true,
+    tags: ['React 19', 'TypeScript', 'Vite', 'Framer Motion', 'Zustand', 'AI 视频生成', '非遗教育'],
+  },
+  {
+    id: 'ai-yunshen',
+    title: '云审智联 · 建审智脑',
+    description: '建筑工程全生命周期智能审计 SaaS 平台——以微信小程序为载体，集成 AI 智能对话、ESG 双碳合规审查、项目全过程管理、审计报告生成与风险预警等核心能力。前端采用微信小程序原生框架，后端基于 Spring Boot 2.7 + Java 17 + MySQL 8.0 + JPA/Hibernate，AI 层接入 MiniMax M2 大模型实现审计咨询与政策解读。覆盖建筑项目五阶段审计流程，支持会员订阅体系，具备完整的用户认证、文件管理与数据持久化能力。',
+    category: 'aiDev',
+    subcategory: 'webapp',
+    thumbnail: 'img/yunshen-preview.jpg',
+    previewUrl: '',
+    externalLink: '',
+    isExternal: true,
+    tags: ['微信小程序', 'Spring Boot', 'Java', 'MySQL', 'AI Agent', 'MiniMax', 'ESG', '建筑工程审计'],
+  },
+  {
+    id: 'ai-qingyin',
+    title: '青银智链',
+    description: '高校-社区-商家三圈联动智慧助老平台——面向长者、子女、志愿者、社区网格员、商户五类角色的 uni-app x 跨端小程序。核心功能涵盖长者一键 SOS 呼救、毫米波健康监测、志愿者时间银行积分体系、社区应急调度与工单管理、商户积分核销等。基于 Vue 3 Composition API + UTS 语言构建，支持关怀模式大字版、WeChat 一键登录，以积分+现金混合支付串联三圈生态。数据层采用 mock 模拟完整业务闭环，可快速对接后端。',
+    category: 'aiDev',
+    subcategory: 'webapp',
+    thumbnail: 'img/qingyin-preview.png',
+    previewUrl: '',
+    externalLink: '',
+    isExternal: true,
+    tags: ['uni-app x', 'Vue 3', 'UTS', '微信小程序', '养老服务', '时间银行', '多角色系统'],
+  },
+  {
+    id: 'ai-jijiu',
+    title: '急救先锋 · 无人机应急管理平台',
+    description: '智能无人机集群应急救援方案——融合低空经济与应急产业，提出模块化无人机集群协同救援概念。方案涵盖 20 类救援模块、集群协同算法、强韧性通信系统、极端环境验证等核心设计，覆盖自然灾害、工业事故、智慧城市、能源巡检、大型活动安保等多场景。已完成完整的发展前景分析：市场规模预测、核心竞争力评估、分阶段发展规划（1-3 年 / 3-5 年 / 5 年以上）、组织架构与成本对比。项目以展览级展板、流程图、分析报告与视觉素材构成完整提案体系。',
+    category: 'aiDev',
+    subcategory: 'concept',
+    thumbnail: 'img/jijiu-preview.jpg',
+    previewUrl: '',
+    externalLink: '',
+    isExternal: true,
+    tags: ['无人机集群', '应急救援', '低空经济', '智能调度', '方案设计', '产品概念'],
+  },
+
+  // ===== 平面设计 → UI/UX 设计 =====
+  {
+    id: 'ui-haidai',
+    title: '海岱文博 · 山东博物馆',
+    description: '山东博物馆官方数字文博 App 全案 UI/UX 设计——以"探索齐鲁文化珍宝的数字钥匙"为核心理念，覆盖文物数字展厅、虚拟助手「玉灵灵」AI 导览、每日文物卡片、成就系统、参观预约与场馆导航等完整功能模块。设计输出包含 Adobe XD 高保真交互原型、14 页用户使用手册、宣传海报与演示视频，支持多语言导览、个性化推荐与离线浏览。全套设计交付物覆盖从产品定义、交互流程到视觉规范的完整链路。',
+    category: 'graphicDesign',
+    subcategory: 'uiDesign',
+    thumbnail: 'img/haidai-preview.png',
+    previewUrl: '',
+    externalLink: '',
+    isExternal: true,
+    tags: ['UI/UX 设计', 'Adobe XD', '博物馆 App', '交互原型', '数字文博', '视觉规范'],
+  },
 
   // ===== 平面设计 → 海报设计 =====
   {
@@ -173,6 +235,7 @@ export const CATEGORY_STRUCTURE = {
     categories: {
       desktop: { title: '桌面应用' },
       webapp: { title: 'Web 应用' },
+      concept: { title: '概念方案' },
     },
   },
   graphicDesign: {
@@ -180,6 +243,7 @@ export const CATEGORY_STRUCTURE = {
     categories: {
       posterDesign: { title: '海报设计' },
       pageDesign: { title: '页面设计' },
+      uiDesign: { title: 'UI/UX 设计' },
     },
   },
   videoEditing: {
