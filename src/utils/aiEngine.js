@@ -118,10 +118,10 @@ export class AIEngine {
     }
     // Add "主人" to the greeting
     if (msg.includes('你好') || msg.includes('hi') || msg.includes('hello')) {
-      return '你好！我是 Etta，欢迎来到我的主人的个人作品集。有什么想了解的？'
+      return '你好！我是 Etta，欢迎来到我主人的个人作品集。有什么想了解的？'
     }
 
-    return '感谢您的留言！AI对话功能正在配置中，暂时无法实时回复。您可以浏览我的主人的作品，或通过微信/邮箱联系我。'
+    return '感谢您的留言！AI对话功能正在配置中，暂时无法实时回复。您可以浏览我主人的作品，或通过微信/邮箱联系我。'
   }
 
   /**
