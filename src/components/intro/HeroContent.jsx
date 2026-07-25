@@ -18,7 +18,7 @@ export default function HeroContent() {
           textTransform: 'uppercase',
         }}
       >
-        Creative Developer
+        Creative Full-Stack · AI Product Builder
       </p>
 
       {/* Main headline with word reveal */}
@@ -33,8 +33,8 @@ export default function HeroContent() {
           fontSize: 'clamp(40px, 8vw, 72px)',
         }}
       >
-        <span style={{ animationDelay: '0.7s' }}>CREATIVE</span>{' '}
-        <span style={{ animationDelay: '0.8s' }}>DEVELOPER</span>
+        <span style={{ animationDelay: '0.7s' }}>LASER</span>{' '}
+        <span style={{ animationDelay: '0.8s' }}>CREATES</span>
         <span style={{ animationDelay: '0.9s', color: '#5ed29c' }}>.</span>
       </h1>
 
@@ -49,7 +49,7 @@ export default function HeroContent() {
           lineHeight: 1.6,
         }}
       >
-        平面设计 · 视频剪辑 · 三维建模 · 前端开发
+        AI 产品开发 · 全栈工程 · UI/UX 设计 · 创意探索
       </p>
 
       {/* CTA Button */}

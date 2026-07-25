@@ -8,22 +8,22 @@ const CARDS = [
   {
     icon: FlaskConical,
     bg: 'bg-black',
-    text: '平面设计 · 海报 · 专辑封面 · 品牌视觉',
+    text: 'AI 产品开发 · AI Agent · 桌面伴侣 · 全栈应用',
   },
   {
     icon: Leaf,
     bg: 'bg-emerald-800',
-    text: '视频剪辑 · AIGC · 快节奏宣传片',
+    text: 'UI/UX 设计 · Figma · Axure · 交互原型 · 品牌视觉',
   },
   {
     icon: Droplets,
     bg: 'bg-cyan-800',
-    text: '三维建模 · 角色渲染 · 场景设计',
+    text: '全栈工程 · Vue/React · Python/Java · Spring Boot',
   },
   {
     icon: Sun,
     bg: 'bg-amber-700',
-    text: '前端开发 · 小游戏 · 交互逻辑',
+    text: '创意探索 · AIGC · 三维建模 · 视频创作 · 游戏',
   },
 ]
 
@@ -46,7 +46,7 @@ function Panel1() {
             letterSpacing: '-0.05em',
           }}
         >
-          从设计到代码，探索创意的无限可能
+          从设计到代码，用 AI 构建产品的无限可能
         </p>
       </div>
       <a
@@ -125,7 +125,7 @@ function Panel2() {
 
 function Panel3() {
   const [ref, inView] = useInView({ threshold: 0.2 })
-  const count = useCountUp(14, 1500, inView)
+  const count = useCountUp(62, 2200, inView, 600)
 
   return (
     <div
