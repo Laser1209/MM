@@ -8,6 +8,18 @@ export default function Navbar({ onAIChat }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [messageIndex, setMessageIndex] = useState(0)
+  const [titleClicks, setTitleClicks] = useState(0)
+
+  // Easter egg: click the title bar (brand logo) 10 times to unlock the hidden game library
+  const handleTitleClick = () => {
+    const next = titleClicks + 1
+    if (next >= 10) {
+      setTitleClicks(0)
+      navigate('/easter-egg')
+    } else {
+      setTitleClicks(next)
+    }
+  }
 
   // Nav loading text marquee
   useEffect(() => {
@@ -42,9 +54,9 @@ export default function Navbar({ onAIChat }) {
         style={{ backdropFilter: 'blur(8px)', background: 'rgba(7, 11, 10, 0.3)' }}
       >
         <nav className="flex items-center justify-between">
-          {/* Logo */}
+          {/* Logo — click 10x to unlock easter egg */}
           <button
-            onClick={() => navigate('/')}
+            onClick={handleTitleClick}
             className="animate-slide-left delay-200 flex items-center gap-2"
           >
             <img

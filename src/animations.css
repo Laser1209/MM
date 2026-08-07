@@ -63,6 +63,18 @@
   }
 }
 
+/* Easter egg hero — staggered fade-up for the hidden game list */
+@keyframes egFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Animation classes */
 .animate-word-reveal > span {
   display: inline-block;
