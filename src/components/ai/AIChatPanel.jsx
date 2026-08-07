@@ -5,6 +5,8 @@ import { MessageCircle, X, Send, Trash2, ArrowRight } from 'lucide-react'
 import { aiEngine } from '../../utils/aiEngine.js'
 import { SITE_CONFIG } from '../../config/siteConfig.js'
 import useLocalStorage from '../../hooks/useLocalStorage.js'
+import MarkdownChart from './MarkdownChart.jsx'
+import MermaidRenderer from './MermaidRenderer.jsx'
 
 // Markdown 渲染——让 AI 回复中的加粗/列表/链接等格式正确展示（暗色主题适配）
 const MARKDOWN_COMPONENTS = {
@@ -48,6 +50,19 @@ const MARKDOWN_COMPONENTS = {
         {...props}
       />
     ),
+  pre: ({ children }) => {
+    const child = Array.isArray(children) ? children[0] : children
+    const cls = child && child.props ? child.props.className : ''
+    const codeText = child && child.props ? child.props.children : ''
+    const lang = String(cls || '').replace(/^language-/, '').toLowerCase()
+    if (lang === 'mermaid') {
+      return <MermaidRenderer code={String(codeText)} />
+    }
+    if (lang === 'echarts' || lang === 'chart') {
+      return <MarkdownChart raw={String(codeText)} />
+    }
+    return <pre style={{ margin: '0.4em 0', padding: '0.5em 0.7em', background: 'rgba(255,255,255,0.08)', borderRadius: 6, overflowX: 'auto' }}>{children}</pre>
+  },
 }
 
 export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
