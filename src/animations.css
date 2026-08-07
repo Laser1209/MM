@@ -75,6 +75,13 @@
   }
 }
 
+/* Easter egg hero shell — full viewport with vh/svh fallback */
+.easter-hero {
+  height: 100vh;
+  height: 100svh;
+  min-height: 640px;
+}
+
 /* Animation classes */
 .animate-word-reveal > span {
   display: inline-block;

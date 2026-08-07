@@ -18,12 +18,10 @@ export default function EasterEggPage() {
 
   return (
     <div
+      className="easter-hero"
       style={{
         position: 'relative',
         width: '100%',
-        height: '100vh',
-        height: '100svh',
-        minHeight: '640px',
         overflow: 'hidden',
         background: '#000',
         color: '#fff',
