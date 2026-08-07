@@ -6,6 +6,7 @@ import {
   extractActionFromJson,
 } from './actionParser.js'
 import { searchInterfaces } from '../data/interfaceCatalog.js'
+import { pruneHistory } from './tokenPrune.js'
 
 /**
  * AI Engine — 对话 + 界面调用
@@ -22,8 +23,6 @@ import { searchInterfaces } from '../data/interfaceCatalog.js'
  *    candidates — status 为 'clarify' 时的候选界面列表，否则 []
  *    status     — 'navigate' | 'clarify' | 'none' | 'not_found'
  */
-
-const MAX_HISTORY = 20
 
 // Function Calling 工具定义：让模型请求跳转界面
 const NAVIGATE_TOOL_DEF = {
@@ -89,11 +88,8 @@ export class AIEngine {
 
     this.history.push({ role: 'user', content: userMessage })
 
-    // 裁剪历史（保留 system + 最近 N 条）
-    if (this.history.length > MAX_HISTORY + 1) {
-      const systemMsg = this.history[0]
-      this.history = [systemMsg, ...this.history.slice(-(MAX_HISTORY - 1))]
-    }
+    // 裁剪历史：保留 system（前缀缓存友好）+ 尽量多最近消息，按 token 预算裁剪
+    this.history = pruneHistory(this.history)
 
     // 无 Key → 直接本地兜底
     if (!this.isConfigured()) {
