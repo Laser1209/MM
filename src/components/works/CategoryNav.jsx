@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
-import { LayoutGrid, Palette, Clapperboard, Box, Code2, Brain } from 'lucide-react'
+import { LayoutGrid, Palette, Clapperboard, Box, Code2, Brain, Cpu } from 'lucide-react'
 
 const CATEGORIES = [
   { id: 'all', label: '全部', Icon: LayoutGrid },
@@ -8,6 +8,7 @@ const CATEGORIES = [
   { id: 'videoEditing', label: '视频剪辑', Icon: Clapperboard },
   { id: 'modeling3d', label: '三维建模', Icon: Box },
   { id: 'basicLogic', label: '基础逻辑', Icon: Code2 },
+  { id: 'softwareDev', label: '软件/应用', Icon: Cpu },
 ]
 
 export default function CategoryNav({ activeCategory, onCategoryChange }) {

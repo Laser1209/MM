@@ -7,14 +7,14 @@ export const WORK_METADATA = [
   {
     id: 'ai-aerie',
     title: 'Aerie · 云栖',
-    description: '本地优先的 AI 桌面伴侣「伊塔」——Electron + Python 多模型调度，灵动岛 UI、情感引擎 PAD 模型、主动关怀推送、QQ Bot 接入、电脑操控、文件智能整理、20+ 工具系统、自进化 L4、5+ 主题。支持 Qwen/DeepSeek/豆包/MiniMax/Gemini 多 Provider，Windows 10/11 桌面端，Android 原生端开发中。',
+    description: '本地优先的 AI 桌面伴侣「伊塔」v0.1.0-beta.1——Electron 桌面壳 + Python 智能内核 + NapCat QQ 接入。灵动岛 UI、侧边栏 5 Tab、办公模式（7 大办公工具）、双层回复校验（Accuracy Guard + Quality Judge）、情感引擎 PAD 模型、Auto-Wake 主动唤醒 9 类场景、电脑操控、文件整理、文档写作、20+ 工具系统、自进化 L4、5+ 主题、故障自愈 14 类、每日自动备份。支持 Qwen/DeepSeek/豆包/MiniMax 多 Provider，Windows 10/11 桌面端。',
     category: 'aiDev',
     subcategory: 'desktop',
     thumbnail: 'img/aerie-preview.svg',
     previewUrl: 'https://laser1209.github.io/Aerie_Spotlight/',
     externalLink: 'https://github.com/Laser1209/Aerie-Yunqi',
     isExternal: true,
-    tags: ['Electron', 'Python', 'AI Agent', 'LLM', '桌面应用'],
+    tags: ['Electron', 'Python', 'Vue3', 'AI Agent', 'NapCat QQ', '多模型调度', '灵动岛', '桌面应用'],
   },
   {
     id: 'ai-braintoss',
@@ -138,13 +138,12 @@ export const WORK_METADATA = [
     thumbnail: 'img/黄褐色古风中式人文博物馆展览海报.pdf',
   },
 
-  // ===== 平面设计 → 页面设计 =====
+  // ===== 基础逻辑书写 / 交互开发 → QQ音乐（页面设计） =====
   {
     id: 'page-1',
     title: 'QQ音乐',
     description: '仿QQ音乐PC端完整首页，包含头部导航、搜索框、轮播歌单推荐、新歌首发、排行榜、MV、底部导航等完整功能模块',
-    category: 'graphicDesign',
-    subcategory: 'pageDesign',
+    category: 'basicLogic',
     thumbnail: 'img/qq-music-preview.svg',
     externalLink: 'program/qq-music.html',
   },
@@ -177,7 +176,7 @@ export const WORK_METADATA = [
     thumbnail: 'img/skadi-render.png',
   },
 
-  // ===== 基础逻辑书写 → 小游戏 =====
+  // ===== 基础逻辑书写 → 隐藏小游戏（彩蛋页专属） =====
   {
     id: 'game-1',
     title: '贪吃蛇',
@@ -185,6 +184,7 @@ export const WORK_METADATA = [
     category: 'basicLogic',
     thumbnail: 'img/snake-preview.svg',
     externalLink: 'program/snake.html',
+    easterEgg: true,
   },
   {
     id: 'game-2',
@@ -193,6 +193,7 @@ export const WORK_METADATA = [
     category: 'basicLogic',
     thumbnail: 'img/gobang-preview.svg',
     externalLink: 'program/gobang.html',
+    easterEgg: true,
   },
   {
     id: 'game-3',
@@ -201,6 +202,7 @@ export const WORK_METADATA = [
     category: 'basicLogic',
     thumbnail: 'img/minesweeper-preview.svg',
     externalLink: 'program/minesweeper.html',
+    easterEgg: true,
   },
   {
     id: 'game-4',
@@ -209,6 +211,7 @@ export const WORK_METADATA = [
     category: 'basicLogic',
     thumbnail: 'img/spider-preview.svg',
     externalLink: 'program/spider-solitaire.html',
+    easterEgg: true,
   },
   {
     id: 'game-5',
@@ -217,6 +220,7 @@ export const WORK_METADATA = [
     category: 'basicLogic',
     thumbnail: 'img/threeKills-preview.svg',
     externalLink: 'program/threeKills.html',
+    easterEgg: true,
   },
   {
     id: 'game-6',
@@ -225,6 +229,18 @@ export const WORK_METADATA = [
     category: 'basicLogic',
     thumbnail: 'img/contra-preview.svg',
     externalLink: 'program/contra.html',
+    easterEgg: true,
+  },
+
+  // ===== 软件/应用开发 → 手势鼠标 =====
+  {
+    id: 'dev-gesture-mouse',
+    title: 'GestureMouse · 手势控制电脑',
+    description: '用安卓手机摄像头识别手势、通过 USB 远程控制电脑鼠标的开源方案。纯本地零云端——手机 USB 推视频流 → PC 推理 → PC 控制 + 回传关键点 → 手机渲染 21 点骨骼 Overlay。支持指尖伸直判定、单指弯曲滚动、中指弯曲右键、捏合点击、四边形控制区域 + 吸附停留点击、夜间视觉增强、DPI 感知与动态 EMA 平滑。',
+    category: 'softwareDev',
+    thumbnail: 'img/GM_LOGO.png',
+    externalLink: 'https://github.com/Laser1209/GestureMouse',
+    tags: ['Android', 'Kotlin', 'Camera2', 'MediaCodec H.264', 'Python', 'MediaPipe', 'PyQt6', 'pynput', '手势识别', 'USB', '纯本地'],
   },
 ]
 
@@ -257,5 +273,8 @@ export const CATEGORY_STRUCTURE = {
   },
   basicLogic: {
     title: '基础逻辑书写',
+  },
+  softwareDev: {
+    title: '软件/应用开发',
   },
 }

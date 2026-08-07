@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T03:17:41.698Z",
+  "generatedAt": "2026-08-07T18:53:19.717Z",
   "programs": [
     "program/contra.html",
     "program/gobang.html",
@@ -17,6 +17,7 @@
     "img/braintoss-mobile-mindmap.png",
     "img/contra-preview.svg",
     "img/Etta.png",
+    "img/GM_LOGO.png",
     "img/gobang-preview.svg",
     "img/haidai-preview.pdf",
     "img/haidai-preview.png",
@@ -86,7 +87,7 @@
   ],
   "summary": {
     "totalPrograms": 7,
-    "totalImages": 29,
+    "totalImages": 30,
     "totalVideos": 2,
     "totalDetails": 24,
     "totalArt": 4,

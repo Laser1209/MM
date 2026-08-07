@@ -40,6 +40,13 @@ function tagsForCategory(category, subcategory) {
   return tags.filter(Boolean)
 }
 
+// 外部完整 URL（如 GitHub）不做 asset() 处理，保持原样
+function resolveLink(link) {
+  if (!link) return undefined
+  if (/^https?:\/\//.test(link)) return link
+  return asset(link)
+}
+
 // ===== 核心逻辑 =====
 
 function buildWorksData() {
@@ -74,7 +81,7 @@ function buildWorksData() {
     return {
       ...meta,
       thumbnail: meta.thumbnail ? asset(meta.thumbnail) : '',
-      externalLink: meta.externalLink ? asset(meta.externalLink) : undefined,
+      externalLink: resolveLink(meta.externalLink),
       tags: tagsForCategory(meta.category, meta.subcategory),
     }
   })
@@ -176,7 +183,19 @@ export function getAllWorks() {
       })
     }
   })
-  return all
+  return all.filter((w) => !w.easterEgg)
+}
+
+// 彩蛋页专属：被隐藏的小游戏
+export function getEasterEggWorks() {
+  return WORK_METADATA
+    .filter((meta) => meta.easterEgg)
+    .map((meta) => ({
+      ...meta,
+      thumbnail: meta.thumbnail ? asset(meta.thumbnail) : '',
+      externalLink: resolveLink(meta.externalLink),
+      tags: tagsForCategory(meta.category, meta.subcategory),
+    }))
 }
 
 export function findWorkById(id) {
@@ -191,9 +210,9 @@ export function getWorksByCategory(catKey) {
     Object.values(cat.categories).forEach((sub) => {
       all.push(...sub.works)
     })
-    return all
+    return all.filter((w) => !w.easterEgg)
   }
-  return cat.works || []
+  return (cat.works || []).filter((w) => !w.easterEgg)
 }
 
 export function getCategoryCount(catKey) {

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { ArrowUpRight, Palette, Clapperboard, Box, Code2, Brain, ExternalLink } from 'lucide-react'
+import { ArrowUpRight, Palette, Clapperboard, Box, Code2, Brain, Cpu, ExternalLink } from 'lucide-react'
 import { SITE_CONFIG } from '../../config/siteConfig.js'
 import { WorksData, getWorksByCategory, getCategoryCount } from '../../data/worksData.js'
 import useInView from '../../hooks/useInView.js'
@@ -10,6 +10,7 @@ const ICONS = {
   cube: Box,
   code: Code2,
   brain: Brain,
+  cpu: Cpu,
 }
 
 export default function WorksPreview() {

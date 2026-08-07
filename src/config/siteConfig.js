@@ -23,7 +23,7 @@ export const SITE_CONFIG = {
   navMessages: [
     'Deploying Works — Not Broken',
     'Loading Portfolio — Works Updating',
-    'Aerie · 云栖 — AI Desktop Companion v9.0',
+    'Aerie · 云栖 — Local AI Desktop Companion v0.1.0-beta.1',
     'Braintoss 不累吐 — AI 灵感陪伴灵宠米沫',
     '云审智脑 — 建筑工程智能审计系统',
     '齐物灵境 — AR+方言淄博文旅平台',
@@ -75,6 +75,7 @@ export const SITE_CONFIG = {
     { id: 'graphicDesign', title: '设计美学', subtitle: 'UI/UX / 海报设计 / 品牌视觉', icon: 'palette' },
     { id: 'videoEditing', title: '视频创作', subtitle: 'AIGC / 创意剪辑', icon: 'video' },
     { id: 'modeling3d', title: '三维建模', subtitle: '角色渲染 / 场景设计', icon: 'cube' },
-    { id: 'basicLogic', title: '交互开发', subtitle: '小游戏 / 创意编程', icon: 'code' },
+    { id: 'basicLogic', title: '交互开发', subtitle: '页面 / 交互开发', icon: 'code' },
+    { id: 'softwareDev', title: '软件/应用开发', subtitle: '手势控制 / 硬件交互', icon: 'cpu' },
   ],
 }
