@@ -13,7 +13,7 @@ export default function App() {
   const openChat = useCallback(() => setChatOpen(true), [])
 
   return (
-    <HashRouter>
+    <HashRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <CustomCursor />
       <ScrollToTop />
       <Routes>
