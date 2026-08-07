@@ -30,7 +30,8 @@ const NAVIGATE_TOOL_DEF = {
   function: {
     name: NAVIGATE_TOOL,
     description:
-      '当用户请求打开某个界面、作品、页面或分区时调用。传入界面清单中匹配到的唯一 id。',
+      '仅当访客明确要"前往/打开/跳转/进入/访问"某个界面、作品页面或分区时才调用，并传入界面清单中匹配到的唯一 id。' +
+      '若访客只是询问、了解、介绍某个作品或项目（例如"XX是什么项目""介绍一下XX""讲讲XX""亲口说/输出内容"），不要调用本工具，直接在回复正文中回答。',
     parameters: {
       type: 'object',
       properties: {
