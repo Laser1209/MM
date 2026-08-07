@@ -7,6 +7,7 @@ import {
 } from './actionParser.js'
 import { searchInterfaces } from '../data/interfaceCatalog.js'
 import { pruneHistory } from './tokenPrune.js'
+import { getLocalAnswer } from './localAnswer.js'
 
 /**
  * AI Engine — 对话 + 界面调用
@@ -91,6 +92,13 @@ export class AIEngine {
 
     // 裁剪历史：保留 system（前缀缓存友好）+ 尽量多最近消息，按 token 预算裁剪
     this.history = pruneHistory(this.history)
+
+    // ---- 本地规则先行：内容解答类提问确定性命中，彻底杜绝误跳转（不进 LLM） ----
+    const local = getLocalAnswer(userMessage)
+    if (local) {
+      this.pushAssistant(local.text)
+      return { text: local.text, action: null, candidates: [], status: 'none' }
+    }
 
     // 无 Key → 直接本地兜底
     if (!this.isConfigured()) {
