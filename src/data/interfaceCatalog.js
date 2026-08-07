@@ -154,6 +154,10 @@ export function findInterfaceById(id) {
 
 /**
  * 按关键词 / 标签做本地模糊匹配（本地兜底识别用）
+ *
+ * 匹配策略（支持自然语言整句，例如"带我去云栖项目"）：
+ *  - 整句直接命中标题/描述 → 高权重
+ *  - 查询文本中包含清单里的任意"关键词/标签/id/标题词" → 按命中的 token 长度累加
  * @param {string} query
  * @returns {Array} 匹配到的界面列表（按相关度粗略排序）
  */
@@ -161,15 +165,22 @@ export function searchInterfaces(query) {
   if (!query) return []
   const q = String(query).toLowerCase().trim()
   const scored = INTERFACE_CATALOG.map((itf) => {
-    const haystack = [itf.id, itf.title, itf.description, ...(itf.tags || [])]
-      .join(' ')
-      .toLowerCase()
+    const title = String(itf.title || '').toLowerCase()
+    const desc = String(itf.description || '').toLowerCase()
+    // 可被"包含式"匹配的清单关键词：id + 标题按标点切词 + 标签
+    // （例如标题 "Aerie · 云栖" 会被切出 "aerie" 与 "云栖"，从而命中 "带我去云栖项目"）
+    const titleTokens = title.split(/[^\p{L}\p{N}]+/u).filter(Boolean)
+    const tokens = [itf.id, ...titleTokens, ...(itf.tags || [])]
+      .map((t) => String(t).toLowerCase())
+      .filter(Boolean)
+
     let score = 0
-    if (haystack.includes(q)) score += 3
-    // 拆分关键词，逐个加分
-    q.split(/\s+/).forEach((word) => {
-      if (word && haystack.includes(word)) score += 1
-    })
+    // 1) 整句命中标题或描述（最强的直接匹配）
+    if (title.includes(q) || desc.includes(q)) score += 10
+    // 2) 查询文本中包含某个清单关键词（支持中文多词整句）
+    for (const t of tokens) {
+      if (t && t.length >= 2 && q.includes(t)) score += t.length
+    }
     return { itf, score }
   })
   return scored
