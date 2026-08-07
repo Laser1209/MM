@@ -199,7 +199,10 @@ export function getEasterEggWorks() {
 }
 
 export function findWorkById(id) {
-  return getAllWorks().find((w) => w.id === id)
+  return (
+    getAllWorks().find((w) => w.id === id) ||
+    getEasterEggWorks().find((w) => w.id === id)
+  )
 }
 
 export function getWorksByCategory(catKey) {
