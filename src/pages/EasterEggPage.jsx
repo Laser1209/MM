@@ -80,26 +80,28 @@ export default function EasterEggPage() {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(24px, 3.2vw, 62px)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'clamp(20px, 2.8vw, 56px)' }}>
-            {['Games', 'About'].map((link) => (
-              <a
-                key={link}
-                href={`#${link.toLowerCase()}`}
-                style={{
-                  fontFamily: FONT_MONO,
-                  fontWeight: 400,
-                  fontSize: 'clamp(11px, 0.78vw, 14px)',
-                  letterSpacing: '0.18em',
-                  textTransform: 'uppercase',
-                  color: '#fff',
-                  textDecoration: 'none',
-                  transition: 'color 0.25s ease',
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.62)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = '#fff')}
-              >
-                {link}
-              </a>
-            ))}
+            <a
+              href="#games"
+              onClick={(e) => {
+                e.preventDefault()
+                document.getElementById('games')?.scrollIntoView({ behavior: 'smooth' })
+              }}
+              style={{
+                fontFamily: FONT_MONO,
+                fontWeight: 400,
+                fontSize: 'clamp(11px, 0.78vw, 14px)',
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: '#fff',
+                textDecoration: 'none',
+                transition: 'color 0.25s ease',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(255,255,255,0.62)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = '#fff')}
+            >
+              Games
+            </a>
           </div>
 
           <button
