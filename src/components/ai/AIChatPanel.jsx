@@ -1,9 +1,54 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
 import { MessageCircle, X, Send, Trash2, ArrowRight } from 'lucide-react'
 import { aiEngine } from '../../utils/aiEngine.js'
 import { SITE_CONFIG } from '../../config/siteConfig.js'
 import useLocalStorage from '../../hooks/useLocalStorage.js'
+
+// Markdown 渲染——让 AI 回复中的加粗/列表/链接等格式正确展示（暗色主题适配）
+const MARKDOWN_COMPONENTS = {
+  a: ({ node, ...props }) => (
+    <a {...props} target="_blank" rel="noopener noreferrer" style={{ color: '#5ed29c', textDecoration: 'underline' }} />
+  ),
+  p: ({ node, ...props }) => <p style={{ margin: '0.4em 0' }} {...props} />,
+  ul: ({ node, ...props }) => (
+    <ul style={{ margin: '0.4em 0', paddingLeft: '1.2em', listStyle: 'disc' }} {...props} />
+  ),
+  ol: ({ node, ...props }) => (
+    <ol style={{ margin: '0.4em 0', paddingLeft: '1.2em', listStyle: 'decimal' }} {...props} />
+  ),
+  li: ({ node, ...props }) => <li style={{ margin: '0.2em 0' }} {...props} />,
+  strong: ({ node, ...props }) => <strong style={{ color: '#fff', fontWeight: 600 }} {...props} />,
+  em: ({ node, ...props }) => <em {...props} />,
+  h1: ({ node, ...props }) => <h1 style={{ fontSize: '1.1em', fontWeight: 600, margin: '0.4em 0' }} {...props} />,
+  h2: ({ node, ...props }) => <h2 style={{ fontSize: '1.05em', fontWeight: 600, margin: '0.4em 0' }} {...props} />,
+  h3: ({ node, ...props }) => <h3 style={{ fontSize: '1em', fontWeight: 600, margin: '0.4em 0' }} {...props} />,
+  code: ({ node, inline, ...props }) =>
+    inline ? (
+      <code
+        style={{
+          background: 'rgba(255,255,255,0.12)',
+          padding: '0.1em 0.35em',
+          borderRadius: 4,
+          fontSize: '0.9em',
+        }}
+        {...props}
+      />
+    ) : (
+      <code
+        style={{
+          display: 'block',
+          background: 'rgba(255,255,255,0.08)',
+          padding: '0.5em 0.7em',
+          borderRadius: 6,
+          margin: '0.4em 0',
+          whiteSpace: 'pre-wrap',
+        }}
+        {...props}
+      />
+    ),
+}
 
 export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
   const [internalOpen, setInternalOpen] = useState(false)
@@ -177,7 +222,11 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
                   }`}
                   style={{ fontFamily: 'Inter, sans-serif', lineHeight: 1.5, fontSize: '13px' }}
                 >
-                  {msg.content}
+                  {msg.role === 'assistant' ? (
+                    <ReactMarkdown components={MARKDOWN_COMPONENTS}>{msg.content}</ReactMarkdown>
+                  ) : (
+                    msg.content
+                  )}
                   {/* 动作卡片：AI 确定要跳转时渲染 */}
                   {msg.role === 'assistant' && msg.action && (
                     <button
