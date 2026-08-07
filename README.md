@@ -17,8 +17,10 @@ Laser（伊泽）的个人作品集 —— 一个从视觉出发、用代码落�
 | 图标 | lucide-react |
 | 搜索 | pinyin-pro（拼音搜索） |
 | 视频 | hls.js（入场 HLS 视频流） |
+| Markdown 渲染 | react-markdown（聊天气泡富文本） |
+| 图表 | Apache ECharts 6（echarts-lite/v1 协议）· Mermaid 11（动态加载） |
 | 媒体处理 | sharp · pdf2png（构建脚本） |
-| AI 对话 | DeepSeek Chat API（双层识别 + 本地兜底） |
+| AI 对话 | DeepSeek Chat API（本地规则先行 + 双层识别 + 本地兜底） |
 
 ---
 
@@ -28,7 +30,7 @@ Laser（伊泽）的个人作品集 —— 一个从视觉出发、用代码落�
 - **首页分区** — 关于我、代表作品预览、核心技能、联系方式（含微信二维码弹窗）
 - **作品总览页** — 分类导航、拼音/关键词搜索、作品卡片流，第一个分类为「人工智能开发」
 - **作品详情页** — 每个作品独立详情，含描述、标签、图集与相关作品推荐
-- **AI 聊天助手「Etta」** — 悬浮对话面板，支持多轮对话、界面识别与一键跳转（详见下方「AI 模块」）
+- **AI 聊天助手「Etta」** — 悬浮对话面板，支持多轮对话、Markdown 富文本、ECharts/Mermaid 图表渲染、界面识别与一键跳转（详见下方「AI 模块」）
 - **彩蛋隐藏游戏库** — 点击导航栏 Logo 10 次解锁 6 款小游戏（贪吃蛇、五子棋、扫雷、蜘蛛纸牌、跳一跳、魂斗罗）
 - **自定义光标** — CustomCursor 全局自定义鼠标效果
 
@@ -49,21 +51,32 @@ Laser（伊泽）的个人作品集 —— 一个从视觉出发、用代码落�
 
 ## AI 模块 / AI Module
 
-AI 助手采用「双层识别 + 本地兜底」策略，保证任何情况下都能响应：
+AI 助手采用「**本地规则先行 + 双层识别 + 本地兜底**」策略，任何情况下都能响应，并保证「内容解答类提问绝不误跳转」：
 
-1. **Function Calling** — 请求带 `tools`，模型原生返回结构化 `tool_calls`，解析后跳转
-2. **JSON 模式** — Function Calling 失败时，用 `response_format` 强制合法 JSON
-3. **本地兜底** — 未配置 API Key 或 API 不可用时，走关键词 / 本地界面匹配
+1. **本地规则先行** — 内容解答类提问（是什么 / 介绍 / 讲解 / 输出 等）先在本地确定性命中：匹配到已知作品则直接输出其介绍，不进 LLM、不跳转（见 `localAnswer.js`）
+2. **Function Calling** — 其余情况请求带 `tools`，模型原生返回结构化 `tool_calls`，解析后跳转
+3. **JSON 模式** — Function Calling 失败时，用 `response_format` 强制合法 JSON
+4. **本地兜底** — 未配置 API Key 或 API 不可用时，走关键词 / 本地界面匹配
+5. **输出防御** — LLM 在内容类提问时误判为导航，`applyParsed` 自动降级为正文回答
+
+回复渲染支持 **Markdown**（`react-markdown`）与 **数据图表**（ECharts `echarts-lite/v1` 精简协议）**流程图 / 时序图**（Mermaid 动态加载）；会话历史按 **token 预算裁剪**（`tokenPrune.js`），利用 DeepSeek 前缀缓存降低长会话成本。
 
 核心文件：
 
 | 文件 | 职责 |
 | --- | --- |
-| `src/utils/aiEngine.js` | AI 引擎：对话 + 界面调用（三层识别） |
+| `src/utils/aiEngine.js` | AI 引擎：对话 + 界面调用（本地先行 + 三层识别 + 输出防御） |
+| `src/utils/localAnswer.js` | 本地规则先行：内容解答确定性兜底，杜绝误跳转 |
 | `src/utils/actionParser.js` | 解析 AI 输出为可执行动作 |
+| `src/utils/tokenPrune.js` | 会话历史按 token 预算裁剪（前缀缓存友好） |
+| `src/utils/chartParser.js` | echarts-lite/v1 图表规格解析（纯函数，含单测） |
 | `src/data/interfaceCatalog.js` | 界面清单：AI 可跳转目的地的权威注册表 |
-| `src/data/aiPrompt.js` | 系统提示词（人设、多轮追问、跳转规则） |
-| `src/components/ai/AIChatPanel.jsx` | 聊天面板 UI（消息气泡、动作卡片、候选列表） |
+| `src/data/aiPrompt.js` | 系统提示词（人设、多轮追问、意图边界、跳转规则、图表输出规则） |
+| `src/components/ai/AIChatPanel.jsx` | 聊天面板 UI（消息气泡、Markdown、图表、动作卡片） |
+| `src/components/ai/MarkdownChart.jsx` | ECharts 模块化渲染组件 |
+| `src/components/ai/MermaidRenderer.jsx` | Mermaid 动态渲染组件 |
+
+> 图表规格使用「LLM 输出精简 chartSpec JSON」的业界主流做法（参考 OpenVizAI / WrenAI / ECharts-Lite 议题），坏规格自动优雅降级为显示原始代码，绝不崩溃。
 
 **AI 配置**：`src/config/aiConfig.js` 被 `.gitignore` 忽略，本地开发手动创建；CI 部署时由 GitHub Actions 通过 `secrets.DEEPSEEK_API_KEY` 自动注入。未配置时 AI 自动切换本地兜底模式。
 
@@ -112,7 +125,7 @@ npm run preview
 ```
 ├── src/
 │   ├── components/
-│   │   ├── ai/          # AI 聊天面板
+│   │   ├── ai/          # AI 聊天面板（MarkdownChart、MermaidRenderer）
 │   │   ├── intro/       # 入场场景（IntroScene、Navbar 等）
 │   │   ├── layout/      # 自定义光标、滚动回顶
 │   │   ├── sections/    # 首页分区（About、Skills、Contact、WorksPreview）
@@ -123,7 +136,7 @@ npm run preview
 │   ├── data/           # 作品元数据、清单、界面注册表、AI 提示词
 │   ├── hooks/          # useInView / useCountUp / useLocalStorage / useMediaQuery
 │   ├── pages/          # HomePage / WorksPage / DetailPage / EasterEggPage
-│   ├── utils/          # aiEngine / actionParser / pinyinSearch
+│   ├── utils/          # aiEngine / actionParser / localAnswer / chartParser / tokenPrune / pinyinSearch
 │   ├── App.jsx         # 路由与全局布局
 │   └── main.jsx        # 应用入口
 ├── public/
@@ -164,8 +177,11 @@ npm run preview
 | 作品总览 `#/works` | PASS | 分类导航（AI 开发置顶）、搜索、卡片跳转正常 |
 | 作品详情 `#/works/:id` | PASS | 描述、标签、相关作品正常 |
 | 彩蛋游戏库 `#/easter-egg` | PASS | 6 款隐藏小游戏正常展示 |
-| AI 聊天面板 | PASS | 本地兜底逻辑可用（无 Key 时仍可回复并跳转） |
+| AI 聊天面板 | PASS | 本地规则先行 + 双层识别 + 本地兜底；Markdown 富文本渲染 |
+| AI 图表渲染 | PASS | ECharts 输出 `<canvas>`、Mermaid 输出 `<svg>`（运行时验证） |
 | 彩蛋解锁（Logo ×10） | PASS | 逻辑正确，连点 10 次跳转 `/easter-egg` |
+
+> 单测：`test/` 下用 Node 内置测试运行器（`node --test`）覆盖图表规格解析、token 裁剪与本地规则先行，共 17 个用例。
 
 > 非阻塞提示：入场 HLS 视频流为远程资源（Mux CDN），偶发 `ERR_ABORTED`，不影响功能。React Router v6 future flags 已显式启用（`v7_startTransition` / `v7_relativeSplatPath`），弃用警告已消除。
 
