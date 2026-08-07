@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { MessageCircle, X, Send, Trash2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { MessageCircle, X, Send, Trash2, ArrowRight } from 'lucide-react'
 import { aiEngine } from '../../utils/aiEngine.js'
 import { SITE_CONFIG } from '../../config/siteConfig.js'
 import useLocalStorage from '../../hooks/useLocalStorage.js'
 
 export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
   const [internalOpen, setInternalOpen] = useState(false)
+  const navigate = useNavigate()
   const open = externalOpen !== undefined ? externalOpen : internalOpen
   const setOpen = (val) => {
     if (onOpenChange) onOpenChange(val)
@@ -45,10 +47,16 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
     setInput('')
     setIsTyping(true)
 
-    // Get AI response
+    // Get AI response (may include an interface action / candidates)
     try {
-      const response = await aiEngine.sendMessage(trimmed)
-      setMessages((prev) => [...prev, { role: 'assistant', content: response }])
+      const res = await aiEngine.sendMessage(trimmed)
+      const assistantMsg = {
+        role: 'assistant',
+        content: res.text,
+        action: res.action || undefined,
+        candidates: res.candidates?.length ? res.candidates : undefined,
+      }
+      setMessages((prev) => [...prev, assistantMsg])
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -58,6 +66,23 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
       setIsTyping(false)
     }
   }, [input, isTyping, setMessages])
+
+  // 执行跳转：普通路由直接 navigate；首页分区则先回首页再滚动到目标
+  const goToInterface = useCallback(
+    (target) => {
+      if (!target) return
+      if (target.scrollTo) {
+        navigate(target.route)
+        setTimeout(() => {
+          const el = document.getElementById(target.scrollTo)
+          if (el) el.scrollIntoView({ behavior: 'smooth' })
+        }, 150)
+      } else {
+        navigate(target.route)
+      }
+    },
+    [navigate]
+  )
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -145,7 +170,7 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 <div
-                  className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm ${
+                  className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm min-w-0 ${
                     msg.role === 'user'
                       ? 'bg-[#5ed29c] text-[#070b0a] rounded-br-sm'
                       : 'bg-white/10 text-white/90 rounded-bl-sm'
@@ -153,6 +178,56 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
                   style={{ fontFamily: 'Inter, sans-serif', lineHeight: 1.5, fontSize: '13px' }}
                 >
                   {msg.content}
+                  {/* 动作卡片：AI 确定要跳转时渲染 */}
+                  {msg.role === 'assistant' && msg.action && (
+                    <button
+                      onClick={() => goToInterface(msg.action)}
+                      className="mt-2 w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-all hover:scale-[1.02]"
+                      style={{ background: 'rgba(94,210,156,0.12)', border: '1px solid rgba(94,210,156,0.25)' }}
+                    >
+                      {msg.action.thumbnail && (
+                        <img
+                          src={msg.action.thumbnail}
+                          alt={msg.action.title}
+                          className="w-11 h-11 rounded-md object-cover flex-shrink-0 bg-black/30"
+                        />
+                      )}
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-white text-xs font-semibold truncate" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                          {msg.action.title}
+                        </span>
+                        <span className="block text-[#5ed29c] text-[10px] mt-0.5">前往界面</span>
+                      </span>
+                      <ArrowRight size={14} className="text-[#5ed29c] flex-shrink-0" />
+                    </button>
+                  )}
+                  {/* 候选列表：AI 拿不准时渲染，供用户选择 */}
+                  {msg.role === 'assistant' && msg.candidates?.length > 0 && (
+                    <div className="mt-2 space-y-1.5">
+                      {msg.candidates.map((cand) => (
+                        <button
+                          key={cand.id}
+                          onClick={() => goToInterface(cand)}
+                          className="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left transition-colors hover:bg-white/10"
+                          style={{ border: '1px solid rgba(255,255,255,0.12)' }}
+                        >
+                          {cand.thumbnail && (
+                            <img
+                              src={cand.thumbnail}
+                              alt={cand.title}
+                              className="w-9 h-9 rounded-md object-cover flex-shrink-0 bg-black/30"
+                            />
+                          )}
+                          <span className="flex-1 min-w-0">
+                            <span className="block text-white text-[11px] font-medium truncate" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                              {cand.title}
+                            </span>
+                          </span>
+                          <ArrowRight size={12} className="text-white/40 flex-shrink-0" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
