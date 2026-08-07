@@ -7,7 +7,7 @@ import {
 } from './actionParser.js'
 import { searchInterfaces } from '../data/interfaceCatalog.js'
 import { pruneHistory } from './tokenPrune.js'
-import { getLocalAnswer } from './localAnswer.js'
+import { getLocalAnswer, isNavIntent, isInfoIntent } from './localAnswer.js'
 
 /**
  * AI Engine — 对话 + 界面调用
@@ -133,6 +133,13 @@ export class AIEngine {
   applyParsed(parsed, userMessage) {
     const result = parsed.result
     if (result?.status === 'navigate') {
+      // 防御：内容解答类意图即使模型误判为导航，也降级为正文回答，绝不跳转
+      if (!isNavIntent(userMessage) && isInfoIntent(userMessage)) {
+        const local = getLocalAnswer(userMessage)
+        const text = local ? local.text : parsed.text || '好的，我直接在正文为您讲解。'
+        this.pushAssistant(text)
+        return { text, action: null, candidates: [], status: 'none' }
+      }
       const text = parsed.text || `好的，我带您前往「${result.action.title}」。`
       this.pushAssistant(text)
       return { text, action: result.action, candidates: [], status: 'navigate' }

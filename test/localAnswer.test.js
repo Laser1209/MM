@@ -28,6 +28,12 @@ test('getLocalAnswer: 讲一讲某个作品 → 返回作品信息', () => {
   assert.ok(r.text.includes('Braintoss'), '答案应包含作品名')
 })
 
+test('getLocalAnswer: 讲解/架构 内容解答 → 返回作品信息', () => {
+  const r = getLocalAnswer('讲解一下 Aerie 的架构')
+  assert.ok(r, '讲解应命中本地作品解答')
+  assert.ok(r.text.includes('Aerie'), '答案应包含作品名')
+})
+
 test('getLocalAnswer: 有哪些作品 → 返回分类清单', () => {
   const r = getLocalAnswer('你主人有哪些作品？')
   assert.ok(r, '应命中清单解答')
