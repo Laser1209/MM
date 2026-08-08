@@ -1,13 +1,12 @@
 {
-  "generatedAt": "2026-08-07T21:18:51.479Z",
+  "generatedAt": "2026-08-08T03:22:18.860Z",
   "programs": [
     "program/contra.html",
     "program/gobang.html",
     "program/minesweeper.html",
     "program/qq-music.html",
     "program/snake.html",
-    "program/spider-solitaire.html",
-    "program/threeKills.html"
+    "program/spider-solitaire.html"
   ],
   "images": [
     "img/aerie-preview.svg",
@@ -31,7 +30,6 @@
     "img/skadi-render.png",
     "img/snake-preview.svg",
     "img/spider-preview.svg",
-    "img/threeKills-preview.svg",
     "img/yunshen-preview.jpg",
     "img/以手造物 以文传心.png",
     "img/以手造物.png",
@@ -86,8 +84,8 @@
     "AIGC/live/The Girl Living Instead Of Me_Revised Version.docx"
   ],
   "summary": {
-    "totalPrograms": 7,
-    "totalImages": 30,
+    "totalPrograms": 6,
+    "totalImages": 29,
     "totalVideos": 2,
     "totalDetails": 24,
     "totalArt": 4,

@@ -3,312 +3,322 @@
 
 <head>
   <meta charset="UTF-8">
-    <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>扫雷</title>
+  <title>扫雷 | MINESWEEPER</title>
+  <link rel="stylesheet" href="eastyle.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box
-    }
-
-    body {
-      background: linear-gradient(135deg, #1a1a2e, #16213e);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', Arial, sans-serif
-    }
-
-    .game-wrapper {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 20px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      color: #fff;
-      flex-wrap: wrap;
-      gap: 10px
-    }
-
-    .info {
-      display: flex;
-      gap: 12px
-    }
-
-    .info-item {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 14px
-    }
-
-    .btn-lvl {
-      padding: 6px 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      font-size: 12px;
-      transition: all 0.3s
-    }
-
-    .btn-lvl.active {
-      background: #00ff88;
-      color: #000;
-      font-weight: bold
-    }
-
-    .btn {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s;
-      color: #fff;
-      background: linear-gradient(45deg, #00ff88, #00cc6a)
-    }
-
     .board {
       display: grid;
       gap: 2px;
-      padding: 8px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 8px;
-      max-width: 95vw
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--eg-border);
+      border-radius: 4px;
+      width: max-content;
+      margin: 0 auto;
+      max-width: 95vw;
+      overflow: auto;
     }
 
     .cell {
-      width: 28px;
-      height: 28px;
-      background: linear-gradient(145deg, #c0c0c0, #a0a0a0);
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: bold;
+      width: 30px;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #fff;
+      font-family: var(--eg-font-mono);
+      font-size: 14px;
+      font-weight: 400;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #333;
-      transition: all 0.1s;
-      padding: 0
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
-    .cell:hover:not(.revealed) {
-      background: linear-gradient(145deg, #d0d0d0, #b0b0b0)
+    .cell:hover:not(.revealed):not(.flagged) {
+      background: rgba(255, 255, 255, 0.12);
     }
 
     .cell.revealed {
-      background: #e0e0e0;
-      cursor: default
+      background: rgba(255, 255, 255, 0.02);
+      border-color: rgba(255, 255, 255, 0.06);
+      cursor: default;
     }
 
     .cell.flagged {
-      background: linear-gradient(145deg, #ffcc00, #ff9900)
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff;
     }
 
     .cell.mine {
-      background: linear-gradient(145deg, #ff4444, #cc0000);
-      animation: exp 0.3s
-    }
-
-    @keyframes exp {
-      0% {
-        transform: scale(1)
-      }
-
-      50% {
-        transform: scale(1.2)
-      }
-
-      100% {
-        transform: scale(1)
-      }
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 100
-    }
-
-    .overlay.show {
-      display: flex
-    }
-
-    .overlay h2 {
-      font-size: 32px;
-      margin-bottom: 12px
-    }
-
-    .overlay.win h2 {
-      color: #00ff88
-    }
-
-    .overlay.lose h2 {
-      color: #ff4444
-    }
-
-    .overlay p {
+      background: rgba(255, 255, 255, 0.28);
       color: #fff;
-      font-size: 18px;
-      margin-bottom: 15px
     }
 
-    .num0 {
-      color: transparent
+    /* 数字 1-8：以白色亮度递减表达 */
+    .n1 { color: #fff; }
+    .n2 { color: rgba(255, 255, 255, 0.92); }
+    .n3 { color: rgba(255, 255, 255, 0.82); }
+    .n4 { color: rgba(255, 255, 255, 0.72); }
+    .n5 { color: rgba(255, 255, 255, 0.62); }
+    .n6 { color: rgba(255, 255, 255, 0.52); }
+    .n7 { color: rgba(255, 255, 255, 0.42); }
+    .n8 { color: rgba(255, 255, 255, 0.34); }
+
+    .level-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
-    .num1 {
-      color: #00f
-    }
-
-    .num2 {
-      color: #008000
-    }
-
-    .num3 {
-      color: #f00
-    }
-
-    .num4 {
-      color: #000080
-    }
-
-    .num5 {
-      color: #800000
-    }
-
-    .num6 {
-      color: #008080
-    }
-
-    .num7 {
-      color: #000
-    }
-
-    .num8 {
-      color: #666
+    .eg-btn--active {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
     }
   </style>
 </head>
 
 <body>
-  <div class="game-wrapper">
-    <div class="header">
-      <div class="info">
-        <span class="info-item">🚩 <span id="flag">0</span></span>
-        <span class="info-item">💣 <span id="mines">10</span></span>
-        <span class="info-item">⏱ <span id="time">0</span></span>
+  <main class="eg-shell">
+    <header class="eg-header">
+      <div class="eg-stats">
+        <span class="eg-stat">旗 <b id="flag">0</b></span>
+        <span class="eg-stat">雷 <b id="mines">10</b></span>
+        <span class="eg-stat">时 <b id="time">0</b></span>
       </div>
-      <h1 style="color:#fff;margin:0;font-size:22px">扫雷</h1>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn-lvl active" data-lvl="easy">简单</button>
-        <button class="btn-lvl" data-lvl="medium">中等</button>
-        <button class="btn-lvl" data-lvl="hard">困难</button>
-        <button class="btn" id="btn-restart">重新开始</button>
+      <h1 class="eg-title">扫雷</h1>
+      <div class="eg-actions">
+        <a class="eg-link" href="../index.html#/easter-egg">&larr; 返回</a>
+        <div class="level-row">
+          <button class="eg-btn eg-btn--active" data-lvl="easy">简单</button>
+          <button class="eg-btn" data-lvl="medium">中等</button>
+          <button class="eg-btn" data-lvl="hard">困难</button>
+        </div>
+        <button class="eg-btn" id="btn-restart">重新开始</button>
       </div>
+    </header>
+
+    <div class="eg-stage">
+      <div class="board" id="board"></div>
     </div>
-    <div class="board" id="board"></div>
-    <div class="overlay" id="overlay">
-      <h2></h2>
-      <p></p><button class="btn" id="overlay-btn">再来一局</button>
+
+    <div class="eg-controls">
+      <span>左键 翻开</span>
+      <span>右键 插旗</span>
+      <span>翻开所有空白格</span>
+    </div>
+  </main>
+
+  <div class="eg-overlay" id="overlay">
+    <h2 id="overlay-msg"></h2>
+    <p id="overlay-detail"></p>
+    <div class="eg-actions">
+      <button class="eg-btn" id="overlay-btn">再来一局</button>
     </div>
   </div>
 
-  <script>
-    'use strict';
+  <script type="module">
+    // ===== 扫雷 — ECHOID 重构版 =====
+    // 现代写法：配置表驱动 + 纯函数游戏逻辑 + 数据驱动渲染
 
-    const CFG = { easy: { r: 9, c: 9, m: 10 }, medium: { r: 16, c: 16, m: 40 }, hard: { r: 16, c: 30, m: 99 } };
-    let level = 'easy', board, revealed, flagged, maplist, gameOver, gameWon, totalMines, flagCount, startTime, timerInterval;
-    const flagEl = document.getElementById('flag'), mineEl = document.getElementById('mines'), timeEl = document.getElementById('time');
-    const boardEl = document.getElementById('board'), overlay = document.getElementById('overlay');
+    const CFG = {
+      easy: { rows: 9, cols: 9, mines: 10 },
+      medium: { rows: 16, cols: 16, mines: 40 },
+      hard: { rows: 16, cols: 30, mines: 99 },
+    };
+
+    const MINE = -1;
+
+    const boardEl = document.getElementById('board');
+    const flagEl = document.getElementById('flag');
+    const mineEl = document.getElementById('mines');
+    const timeEl = document.getElementById('time');
+    const overlay = document.getElementById('overlay');
+    const overlayMsg = document.getElementById('overlay-msg');
+    const overlayDetail = document.getElementById('overlay-detail');
+
+    const state = {
+      level: 'easy',
+      grid: null,       // grid[r][c] = mine count or MINE
+      revealed: null,
+      flagged: null,
+      flags: 0,
+      over: false,
+      won: false,
+      startAt: null,
+      timer: null,
+    };
+
+    function make2d(rows, cols, val) {
+      return Array.from({ length: rows }, () => Array(cols).fill(val));
+    }
+
+    // 纯函数：以 r,c 为中心的邻域坐标
+    function neighbors(r, c) {
+      const { rows, cols } = CFG[state.level];
+      const list = [];
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if (!dr && !dc) continue;
+          const nr = r + dr, nc = c + dc;
+          if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) list.push([nr, nc]);
+        }
+      }
+      return list;
+    }
+
+    function plantMines() {
+      const { rows, cols, mines } = CFG[state.level];
+      const grid = make2d(rows, cols, 0);
+      let placed = 0;
+      while (placed < mines) {
+        const r = Math.floor(Math.random() * rows);
+        const c = Math.floor(Math.random() * cols);
+        if (grid[r][c] !== MINE) { grid[r][c] = MINE; placed++; }
+      }
+      // 计算数字
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (grid[r][c] === MINE) continue;
+          grid[r][c] = neighbors(r, c).filter(([nr, nc]) => grid[nr][nc] === MINE).length;
+        }
+      }
+      return grid;
+    }
 
     function init(lvl) {
-      if (timerInterval) clearInterval(timerInterval);
-      level = lvl || level; const c = CFG[level];
-      document.querySelectorAll('.btn-lvl').forEach(b => b.classList.toggle('active', b.dataset.lvl === level));
-      totalMines = c.m; flagCount = 0; gameOver = false; gameWon = false; startTime = null;
-      board = Array(c.r).fill(null).map(() => Array(c.c).fill(0));
-      revealed = Array(c.r).fill(null).map(() => Array(c.c).fill(false));
-      flagged = Array(c.r).fill(null).map(() => Array(c.c).fill(false));
-      maplist = [];
-      let placed = 0;
-      while (placed < totalMines) { const r = Math.floor(Math.random() * c.r), cl = Math.floor(Math.random() * c.c); if (board[r][cl] !== -1) { board[r][cl] = -1; maplist.push({ r, cl }); placed++; } }
-      for (let r = 0; r < c.r; r++)for (let cl = 0; cl < c.c; cl++) { if (board[r][cl] === -1) continue; let cnt = 0; for (let dr = -1; dr <= 1; dr++)for (let dc = -1; dc <= 1; dc++) { if (!dr && !dc) continue; const nr = r + dr, nc = cl + dc; if (nr >= 0 && nr < c.r && nc >= 0 && nc < c.c && board[nr][nc] === -1) cnt++; } board[r][cl] = cnt; }
-      overlay.classList.remove('show', 'win', 'lose');
-      updateUI(); render();
+      if (state.timer) clearInterval(state.timer);
+      state.level = lvl || state.level;
+      const { rows, cols, mines } = CFG[state.level];
+      state.grid = plantMines();
+      state.revealed = make2d(rows, cols, false);
+      state.flagged = make2d(rows, cols, false);
+      state.flags = 0;
+      state.over = false;
+      state.won = false;
+      state.startAt = null;
+      state.timer = null;
+
+      // 同步难度按钮状态
+      document.querySelectorAll('[data-lvl]').forEach((b) => {
+        b.classList.toggle('eg-btn--active', b.dataset.lvl === state.level);
+      });
+      overlay.classList.remove('show');
+      syncUI();
+      render();
     }
 
-    function clickCell(r, cl) {
-      if (gameOver || gameWon || flagged[r][cl] || revealed[r][cl]) return;
-      if (!startTime) { startTime = Date.now(); timerInterval = setInterval(() => { if (startTime && !gameOver && !gameWon) timeEl.textContent = Math.floor((Date.now() - startTime) / 1000); }, 1000); }
-      if (board[r][cl] === -1) { revealed[r][cl] = true; gameOver = true; maplist.forEach(m => { revealed[m.r][m.cl] = true; }); render(); endGame(); return; }
-      reveal(r, cl); checkWin(); updateUI(); render(); if (gameWon) endGame();
+    function reveal(r, c) {
+      if (state.over || state.revealed[r][c] || state.flagged[r][c]) return;
+      state.revealed[r][c] = true;
+      if (state.grid[r][c] === 0) neighbors(r, c).forEach(([nr, nc]) => reveal(nr, nc));
     }
 
-    function reveal(r, cl) {
-      if (r < 0 || r >= CFG[level].r || cl < 0 || cl >= CFG[level].c || revealed[r][cl] || flagged[r][cl]) return;
-      revealed[r][cl] = true;
-      if (board[r][cl] === 0) for (let dr = -1; dr <= 1; dr++)for (let dc = -1; dc <= 1; dc++)if (dr || dc) reveal(r + dr, cl + dc);
+    function open(r, c) {
+      if (state.over || state.revealed[r][c] || state.flagged[r][c]) return;
+      startTimer();
+
+      // 踩雷
+      if (state.grid[r][c] === MINE) {
+        state.over = true;
+        for (let i = 0; i < CFG[state.level].rows; i++) {
+          for (let j = 0; j < CFG[state.level].cols; j++) {
+            if (state.grid[i][j] === MINE) state.revealed[i][j] = true;
+          }
+        }
+        endGame(false);
+        return;
+      }
+
+      reveal(r, c);
+      checkWin();
+      syncUI();
+      render();
     }
 
-    function flagCell(r, cl) {
-      if (gameOver || gameWon || revealed[r][cl]) return;
-      flagged[r][cl] = !flagged[r][cl]; flagCount += flagged[r][cl] ? 1 : -1; updateUI(); render();
+    function toggleFlag(r, c) {
+      if (state.over || state.revealed[r][c]) return;
+      state.flagged[r][c] = !state.flagged[r][c];
+      state.flags += state.flagged[r][c] ? 1 : -1;
+      syncUI();
+      render();
     }
 
     function checkWin() {
-      let cnt = 0; const c = CFG[level];
-      for (let r = 0; r < c.r; r++)for (let cl = 0; cl < c.c; cl++)if (revealed[r][cl]) cnt++;
-      if (cnt === c.r * c.c - totalMines) gameWon = true;
-    }
-
-    function endGame() {
-      if (timerInterval) clearInterval(timerInterval);
-      overlay.classList.add('show');
-      const el = Math.floor((Date.now() - (startTime || Date.now())) / 1000);
-      if (gameOver) { overlay.classList.add('lose'); overlay.querySelector('h2').textContent = '💥 踩到雷了!'; overlay.querySelector('p').textContent = '游戏结束'; }
-      else if (gameWon) { overlay.classList.add('win'); overlay.querySelector('h2').textContent = '🎉 恭喜获胜!'; overlay.querySelector('p').textContent = '用时: ' + el + ' 秒'; }
-    }
-
-    function updateUI() { flagEl.textContent = flagCount; mineEl.textContent = totalMines; if (!startTime) timeEl.textContent = '0'; }
-
-    function render() {
-      const c = CFG[level]; boardEl.style.gridTemplateColumns = `repeat(${c.c},28px)`; boardEl.innerHTML = '';
-      for (let r = 0; r < c.r; r++)for (let cl = 0; cl < c.c; cl++) {
-        const cell = document.createElement('button'); cell.className = 'cell';
-        if (revealed[r][cl]) { cell.classList.add('revealed'); if (board[r][cl] === -1) { cell.classList.add('mine'); cell.textContent = '💣'; } else if (board[r][cl] > 0) { cell.textContent = board[r][cl]; cell.classList.add('num' + board[r][cl]); } }
-        else if (flagged[r][cl]) { cell.classList.add('flagged'); cell.textContent = '🚩'; }
-        cell.addEventListener('click', () => clickCell(r, cl));
-        cell.addEventListener('contextmenu', e => { e.preventDefault(); flagCell(r, cl); });
-        boardEl.appendChild(cell);
+      const { rows, cols, mines } = CFG[state.level];
+      let revealedCount = 0;
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) if (state.revealed[r][c]) revealedCount++;
+      }
+      if (revealedCount === rows * cols - mines) {
+        state.won = true;
+        state.over = true;
+        endGame(true);
       }
     }
 
-    document.querySelectorAll('.btn-lvl').forEach(b => b.addEventListener('click', () => init(b.dataset.lvl)));
+    function endGame(won) {
+      if (state.timer) clearInterval(state.timer);
+      const secs = state.startAt ? Math.floor((Date.now() - state.startAt) / 1000) : 0;
+      overlayMsg.textContent = won ? '通关' : 'GAME OVER';
+      overlayDetail.textContent = won ? `用时 ${secs} 秒` : '踩到雷了';
+      overlay.classList.add('show');
+      syncUI();
+      render();
+    }
+
+    function startTimer() {
+      if (state.startAt) return;
+      state.startAt = Date.now();
+      state.timer = setInterval(() => {
+        if (!state.over) timeEl.textContent = Math.floor((Date.now() - state.startAt) / 1000);
+      }, 1000);
+    }
+
+    function syncUI() {
+      flagEl.textContent = state.flags;
+      mineEl.textContent = CFG[state.level].mines;
+      if (!state.startAt) timeEl.textContent = '0';
+    }
+
+    // ===== 渲染（数据驱动，不依赖 emoji） =====
+    function render() {
+      const { rows, cols } = CFG[state.level];
+      boardEl.style.gridTemplateColumns = `repeat(${cols}, 30px)`;
+      boardEl.innerHTML = '';
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const cell = document.createElement('button');
+          cell.className = 'cell';
+
+          if (state.revealed[r][c]) {
+            cell.classList.add('revealed');
+            if (state.grid[r][c] === MINE) {
+              cell.classList.add('mine');
+              cell.textContent = '●';
+            } else if (state.grid[r][c] > 0) {
+              cell.textContent = state.grid[r][c];
+              cell.classList.add('n' + state.grid[r][c]);
+            }
+          } else if (state.flagged[r][c]) {
+            cell.classList.add('flagged');
+            cell.textContent = '✕';
+          }
+
+          cell.addEventListener('click', () => open(r, c));
+          cell.addEventListener('contextmenu', (e) => { e.preventDefault(); toggleFlag(r, c); });
+          boardEl.appendChild(cell);
+        }
+      }
+    }
+
+    document.querySelectorAll('[data-lvl]').forEach((b) => b.addEventListener('click', () => init(b.dataset.lvl)));
     document.getElementById('btn-restart').addEventListener('click', () => init());
     document.getElementById('overlay-btn').addEventListener('click', () => init());
 

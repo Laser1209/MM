@@ -97,7 +97,7 @@ function buildWorksData() {
     let category = 'basicLogic'
     let subcategory = undefined
 
-    if (basename.includes('game') || ['snake', 'gobang', 'minesweeper', 'spider-solitaire', 'threeKills', 'contra'].includes(basename)) {
+    if (basename.includes('game') || ['snake', 'gobang', 'minesweeper', 'spider-solitaire', 'contra'].includes(basename)) {
       category = 'basicLogic'
     } else if (basename.includes('page') || basename.includes('poster')) {
       category = 'graphicDesign'

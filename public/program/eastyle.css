@@ -1,0 +1,245 @@
+/* ============================================================
+   ECHOID Game Shell — 彩蛋页隐藏游戏库共享主题
+   对齐 EasterEggPage 的 ECHOID 风格：纯黑 + 白 + 终端等宽字体
+   ============================================================ */
+:root {
+  --eg-bg: #000;
+  --eg-panel: rgba(255, 255, 255, 0.05);
+  --eg-panel-strong: rgba(255, 255, 255, 0.09);
+  --eg-border: rgba(255, 255, 255, 0.14);
+  --eg-border-strong: rgba(255, 255, 255, 0.26);
+  --eg-text: #fff;
+  --eg-muted: rgba(255, 255, 255, 0.62);
+  --eg-dim: rgba(255, 255, 255, 0.35);
+  --eg-hover: rgba(255, 255, 255, 0.09);
+
+  --eg-font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', 'Cascadia Mono',
+    Menlo, Consolas, monospace;
+  --eg-font-display: 'Sora', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--eg-bg);
+  color: var(--eg-text);
+  font-family: var(--eg-font-mono);
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 3vw, 40px);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== 外壳 ===== */
+.eg-shell {
+  width: 100%;
+  max-width: 960px;
+  border: 1px solid var(--eg-border);
+  background: var(--eg-panel);
+  padding: clamp(20px, 3vw, 34px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2vw, 24px);
+  animation: eg-enter 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes eg-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== 头部 ===== */
+.eg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.eg-title {
+  font-family: var(--eg-font-display);
+  font-weight: 200;
+  font-size: clamp(18px, 2vw, 26px);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.eg-chip {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--eg-panel-strong);
+  padding: 8px 14px;
+  color: var(--eg-text);
+}
+
+.eg-stats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.eg-stat {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--eg-border);
+  padding: 8px 14px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--eg-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.eg-stat b {
+  color: var(--eg-text);
+  font-weight: 400;
+}
+
+.eg-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ===== 按钮 / 链接 ===== */
+.eg-btn,
+.eg-link {
+  font-family: var(--eg-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--eg-text);
+  background: transparent;
+  border: 1px solid var(--eg-border-strong);
+  padding: 10px 18px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.eg-btn:hover,
+.eg-link:hover {
+  background: var(--eg-hover);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.eg-btn--dim {
+  color: var(--eg-muted);
+}
+
+.eg-btn[disabled] {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* ===== 舞台（画布 / 棋盘容器） ===== */
+.eg-stage {
+  border: 1px solid var(--eg-border);
+  background: rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  position: relative;
+}
+
+.eg-stage canvas {
+  display: block;
+}
+
+/* ===== 操作说明 ===== */
+.eg-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  color: var(--eg-muted);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eg-controls span {
+  background: var(--eg-panel-strong);
+  padding: 6px 12px;
+  border: 1px solid var(--eg-border);
+}
+
+/* ===== 覆盖层（开始 / 结束 / 胜利） ===== */
+.eg-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.86);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+  padding: 24px;
+  text-align: center;
+}
+
+.eg-overlay.show {
+  display: flex;
+}
+
+.eg-overlay h2 {
+  font-family: var(--eg-font-display);
+  font-weight: 200;
+  font-size: clamp(26px, 4vw, 44px);
+  letter-spacing: 0.1em;
+  color: var(--eg-text);
+}
+
+.eg-overlay p {
+  color: var(--eg-muted);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+
+.eg-overlay .eg-actions {
+  margin-top: 6px;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 640px) {
+  body {
+    padding: 10px;
+  }
+
+  .eg-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .eg-stat {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}

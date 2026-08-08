@@ -214,15 +214,6 @@ export const WORK_METADATA = [
     easterEgg: true,
   },
   {
-    id: 'game-5',
-    title: '跳一跳',
-    description: '跳一跳游戏实现',
-    category: 'basicLogic',
-    thumbnail: 'img/threeKills-preview.svg',
-    externalLink: 'program/threeKills.html',
-    easterEgg: true,
-  },
-  {
     id: 'game-6',
     title: '魂斗罗',
     description: '经典魂斗罗游戏复刻',

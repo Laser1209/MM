@@ -3,249 +3,307 @@
 
 <head>
   <meta charset="UTF-8">
-    <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="../favicon.png" type="image/x-icon">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>魂斗罗</title>
+  <title>魂斗罗 | CONTRA</title>
+  <link rel="stylesheet" href="eastyle.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box
-    }
-
-    body {
-      background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Segoe UI', Arial, sans-serif
-    }
-
-    .game-wrapper {
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5)
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      color: #fff;
-      flex-wrap: wrap;
-      gap: 10px
-    }
-
-    .info {
-      display: flex;
-      gap: 12px
-    }
-
-    .info-item {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.1)
-    }
-
-    .btn {
-      padding: 10px 18px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: all 0.3s;
-      color: #fff;
-      font-size: 16px;
-      background: linear-gradient(135deg, #ff4444, #cc0000);
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5)
+    .eg-stage {
+      width: min(92vw, 800px);
+      margin: 0 auto;
     }
 
     canvas {
-      display: block;
-      border-radius: 10px
-    }
-
-    .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
       width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 100
+      height: auto;
     }
 
-    .overlay.show {
-      display: flex
-    }
-
-    .overlay h2 {
-      font-size: 36px;
-      margin-bottom: 12px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8)
-    }
-
-    .overlay.win h2 {
-      color: #00ff88
-    }
-
-    .overlay.lose h2 {
-      color: #ff4444
-    }
-
-    .overlay p {
-      color: #fff;
-      font-size: 20px;
-      margin-bottom: 20px
-    }
-
-    .controls {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin-top: 10px;
-      color: rgba(255, 255, 255, 0.5);
-      font-size: 11px
-    }
-
-    .controls span {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 4px 10px;
-      border-radius: 4px
-    }
+    .eg-controls span { font-size: 10px; }
   </style>
 </head>
 
 <body>
-  <div class="game-wrapper">
-    <div class="header">
-      <div class="info">
-        <span class="info-item">❤️ <span id="hp">3</span></span>
-        <span class="info-item">⭐ <span id="score">0</span></span>
+  <main class="eg-shell">
+    <header class="eg-header">
+      <div class="eg-stats">
+        <span class="eg-stat">生命 <b id="hp">3</b></span>
+        <span class="eg-stat">得分 <b id="score">0</b></span>
       </div>
-      <h1 style="color:#fff;margin:0;font-size:24px;letter-spacing:4px">魂斗罗</h1>
-      <button class="btn" id="btn-start">开始游戏</button>
+      <h1 class="eg-title">魂斗罗</h1>
+      <div class="eg-actions">
+        <a class="eg-link" href="../index.html#/easter-egg">&larr; 返回</a>
+        <button class="eg-btn" id="btn-start">开始游戏</button>
+      </div>
+    </header>
+
+    <div class="eg-stage">
+      <canvas id="canvas" width="800" height="500"></canvas>
     </div>
-    <canvas id="canvas" width="800" height="500"></canvas>
-    <div class="controls"><span>← → / A D 移动</span><span>↑ / W 跳跃</span><span>空格 / J 射击</span></div>
-    <div class="overlay" id="overlay">
-      <h2></h2>
-      <p></p><button class="btn" id="overlay-btn">开始游戏</button>
+
+    <div class="eg-controls">
+      <span>&larr; &rarr; / A D 移动</span>
+      <span>&uarr; / W 跳跃</span>
+      <span>空格 / J 射击</span>
+    </div>
+  </main>
+
+  <div class="eg-overlay" id="overlay">
+    <h2 id="overlay-msg"></h2>
+    <p id="overlay-detail"></p>
+    <div class="eg-actions">
+      <button class="eg-btn" id="overlay-btn">开始游戏</button>
     </div>
   </div>
 
-  <script>
-    'use strict';
+  <script type="module">
+    // ===== 魂斗罗 — ECHOID 重构版 =====
+    // 现代写法：实体类 + 弹幕/敌人/粒子对象池 + 单循环
 
-    const canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d');
-    const W = 800, H = 500, G = 0.4, GY = 420;
+    const W = 800, H = 500;
+    const GRAVITY = 0.4;
+    const GROUND_Y = 420;
 
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const hpEl = document.getElementById('hp');
+    const scoreEl = document.getElementById('score');
+    const overlay = document.getElementById('overlay');
+    const overlayMsg = document.getElementById('overlay-msg');
+    const overlayDetail = document.getElementById('overlay-detail');
+
+    // ===== 实体 =====
     class Bullet {
-      constructor(x, y, vx, vy) { this.x = x; this.y = y; this.vx = vx; this.vy = vy; this.alive = true; this.w = 6; this.h = 3; }
-      update() { this.x += this.vx; this.y += this.vy; if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.alive = false; }
+      constructor(x, y, vx, vy) {
+        this.x = x; this.y = y; this.vx = vx; this.vy = vy;
+        this.w = 6; this.h = 3;
+        this.alive = true;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.alive = false;
+      }
     }
 
     class Enemy {
-      constructor(x, y, type) { this.x = x; this.y = y; this.w = 30; this.h = 36; this.alive = true; this.type = type || 'grunt'; this.vx = type === 'runner' ? 1.5 : 0; this.hp = type === 'tank' ? 3 : 1; this.frame = 0; }
-      update() { this.x += this.vx; this.frame++; }
+      constructor(x, y, type) {
+        this.x = x; this.y = y;
+        this.w = 30; this.h = 36;
+        this.type = type;
+        this.vx = type === 'runner' ? 1.5 : 0;
+        this.hp = type === 'tank' ? 3 : 1;
+        this.frame = 0;
+        this.alive = true;
+      }
+      update() {
+        this.x += this.vx;
+        this.frame++;
+      }
     }
 
-    let px = 100, py = GY - 40, pw = 30, ph = 40, vx = 0, vy = 0, grounded = true, facing = true, hp = 3, score = 0;
-    let bullets = [], enemies = [], particles = [], bgX = 0, gameOver = false, gameWon = false, playing = false, shootCD = 0, keys = {}, animId;
+    class Particle {
+      constructor(x, y) {
+        this.x = x; this.y = y;
+        this.vx = (Math.random() - 0.5) * 5;
+        this.vy = Math.random() * -6 - 2;
+        this.life = 20;
+      }
+      update() { this.x += this.vx; this.y += this.vy; this.life--; }
+    }
+
+    // ===== 状态 =====
+    const state = {
+      px: 100, py: GROUND_Y - 40, pw: 30, ph: 40,
+      vx: 0, vy: 0, grounded: true, facing: true,
+      hp: 3, score: 0,
+      bullets: [], enemies: [], particles: [],
+      shootCD: 0, keys: {},
+      playing: false, over: false, won: false,
+    };
+
+    let animId = null;
 
     function spawnEnemies() {
-      enemies = []; for (let col = 0; col < 6; col++)enemies.push(new Enemy(600 + col * 120 + Math.random() * 50, GY - 36, col % 3 === 2 ? 'tank' : (col % 3 === 1 ? 'runner' : 'grunt')));
+      state.enemies = [];
+      for (let col = 0; col < 6; col++) {
+        const type = col % 3 === 2 ? 'tank' : (col % 3 === 1 ? 'runner' : 'grunt');
+        state.enemies.push(new Enemy(600 + col * 120 + Math.random() * 50, GROUND_Y - 36, type));
+      }
     }
 
-    function start() { px = 100; py = GY - 40; vx = 0; vy = 0; grounded = true; hp = 3; score = 0; bullets = []; particles = []; bgX = 0; gameOver = false; gameWon = false; playing = true; shootCD = 0; spawnEnemies(); document.getElementById('overlay').classList.remove('show', 'win', 'lose'); }
+    function start() {
+      state.px = 100; state.py = GROUND_Y - 40;
+      state.vx = 0; state.vy = 0; state.grounded = true; state.facing = true;
+      state.hp = 3; state.score = 0;
+      state.bullets = []; state.particles = [];
+      state.shootCD = 0;
+      state.playing = true; state.over = false; state.won = false;
+      spawnEnemies();
+      overlay.classList.remove('show');
+      if (!animId) animId = requestAnimationFrame(loop);
+    }
 
-    function shoot() { if (shootCD > 0 || !playing || gameOver) return; const dir = facing ? 1 : -1; bullets.push(new Bullet(px + (dir > 0 ? pw : 0), py + ph / 2, dir * 7, 0)); shootCD = 15; }
+    function shoot() {
+      if (state.shootCD > 0 || !state.playing || state.over) return;
+      const dir = state.facing ? 1 : -1;
+      state.bullets.push(new Bullet(state.px + (dir > 0 ? state.pw : 0), state.py + state.ph / 2, dir * 7, 0));
+      state.shootCD = 15;
+    }
 
     function update() {
-      if (!playing || gameOver || gameWon) return;
-      if (shootCD > 0) shootCD--;
-      if (keys.ArrowLeft || keys.KeyA) { vx = -3; facing = false; } else if (keys.ArrowRight || keys.KeyD) { vx = 3; facing = true; } else vx = 0;
-      if ((keys.ArrowUp || keys.KeyW) && grounded) { vy = -10; grounded = false; }
+      if (!state.playing || state.over || state.won) return;
+      if (state.shootCD > 0) state.shootCD--;
+
+      // 移动 / 跳跃 / 射击
+      const { keys } = state;
+      if (keys.ArrowLeft || keys.KeyA) { state.vx = -3; state.facing = false; }
+      else if (keys.ArrowRight || keys.KeyD) { state.vx = 3; state.facing = true; }
+      else state.vx = 0;
+      if ((keys.ArrowUp || keys.KeyW) && state.grounded) { state.vy = -10; state.grounded = false; }
       if (keys.Space || keys.KeyJ) shoot();
 
-      vy += G; px += vx; py += vy;
-      if (px < 0) px = 0; if (px > W - pw) px = W - pw;
-      if (py >= GY - ph) { py = GY - ph; vy = 0; grounded = true; }
+      // 物理
+      state.vy += GRAVITY;
+      state.px += state.vx;
+      state.py += state.vy;
+      if (state.px < 0) state.px = 0;
+      if (state.px > W - state.pw) state.px = W - state.pw;
+      if (state.py >= GROUND_Y - state.ph) { state.py = GROUND_Y - state.ph; state.vy = 0; state.grounded = true; }
 
-      bullets.forEach(b => b.update()); bullets = bullets.filter(b => b.alive);
-      enemies.forEach(e => e.update());
+      // 子弹 / 敌人 / 粒子
+      state.bullets.forEach((b) => b.update());
+      state.bullets = state.bullets.filter((b) => b.alive);
+      state.enemies.forEach((e) => e.update());
 
-      for (let i = bullets.length - 1; i >= 0; i--)for (let j = enemies.length - 1; j >= 0; j--) {
-        const b = bullets[i], e = enemies[j];
-        if (b.x < e.x + e.w && b.x + b.w > e.x && b.y < e.y + e.h && b.y + b.h > e.y) {
-          b.alive = false; e.hp--;
-          if (e.hp <= 0) {
-            e.alive = false; score += e.type === 'tank' ? 300 : 100;
-            for (let k = 0; k < 8; k++)particles.push({ x: e.x + e.w / 2, y: e.y + e.h / 2, vx: (Math.random() - 0.5) * 5, vy: Math.random() * -6 - 2, life: 20, clr: '#ff8800' });
+      // 碰撞检测：子弹 × 敌人
+      for (let i = state.bullets.length - 1; i >= 0; i--) {
+        for (let j = state.enemies.length - 1; j >= 0; j--) {
+          const b = state.bullets[i], e = state.enemies[j];
+          if (b.x < e.x + e.w && b.x + b.w > e.x && b.y < e.y + e.h && b.y + b.h > e.y) {
+            b.alive = false;
+            e.hp--;
+            if (e.hp <= 0) {
+              e.alive = false;
+              state.score += e.type === 'tank' ? 300 : 100;
+              for (let k = 0; k < 8; k++) state.particles.push(new Particle(e.x + e.w / 2, e.y + e.h / 2));
+            }
+            break;
           }
         }
       }
-      enemies = enemies.filter(e => e.alive);
-      particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.life--; }); particles = particles.filter(p => p.life > 0);
-      if (!enemies.length && playing) { gameWon = true; playing = false; document.getElementById('overlay').classList.add('show', 'win'); document.getElementById('overlay').querySelector('h2').textContent = '胜利!'; document.getElementById('overlay').querySelector('p').textContent = '得分: ' + score; document.getElementById('overlay-btn').textContent = '再来一局'; }
+      state.enemies = state.enemies.filter((e) => e.alive);
+      state.particles.forEach((p) => p.update());
+      state.particles = state.particles.filter((p) => p.life > 0);
+
+      // 胜利判定
+      if (!state.enemies.length && state.playing) {
+        state.won = true;
+        state.playing = false;
+        overlayMsg.textContent = 'VICTORY';
+        overlayDetail.textContent = `得分 ${state.score}`;
+        document.getElementById('overlay-btn').textContent = '再来一局';
+        overlay.classList.add('show');
+      }
     }
 
+    // ===== 渲染（ECHOID 单色战场） =====
     function drawBg() {
-      const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#0a0a2e'); g.addColorStop(0.7, '#1a0a2e'); g.addColorStop(1, '#0d1a0a');
-      ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-      ctx.strokeStyle = 'rgba(255,255,255,0.03)';
-      for (let y = 0; y < H; y += 80) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
-      ctx.fillStyle = 'rgba(100,200,100,0.3)';
-      for (let x = 0; x < W; x += 40) { ctx.fillRect(x, GY - 5 - Math.sin(x * 0.05) * 3, 30, 7 + Math.sin(x * 0.05) * 3); }
-      ctx.fillStyle = '#1a3a1a'; ctx.fillRect(0, GY, W, H - GY);
-      ctx.fillStyle = '#2a4a2a'; ctx.fillRect(0, GY, W, 4);
+      const g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#030303');
+      g.addColorStop(0.7, '#0a0a0a');
+      g.addColorStop(1, '#111');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+
+      // 远景网格线
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+      ctx.lineWidth = 1;
+      for (let y = 0; y < H; y += 80) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      }
+      // 地平线
+      ctx.fillStyle = 'rgba(255,255,255,0.16)';
+      ctx.fillRect(0, GROUND_Y, W, H - GROUND_Y);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, GROUND_Y, W, 2);
     }
 
     function drawPlayer() {
-      ctx.fillStyle = '#e0e0e0'; ctx.fillRect(px + (facing ? 4 : 0), py + 4, pw - 4, ph - 8);
-      ctx.fillStyle = '#1a1a3e'; ctx.fillRect(px + (facing ? 10 : 4), py + 12, pw - 14, ph - 20);
-      ctx.fillStyle = '#cc0000'; ctx.fillRect(px, py + 4, pw, 4);
-      ctx.fillStyle = '#ffdd00'; ctx.beginPath(); ctx.arc(px + pw / 2, py + ph / 2, 6, 0, Math.PI * 2); ctx.fill();
-      const gx = px + (facing ? pw - 4 : 0); ctx.fillStyle = '#333'; ctx.fillRect(gx, py + ph / 2 - 2, facing ? 10 : -10, 4);
+      const { px, py, pw, ph, facing } = state;
+      // 身体
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.roundRect(px, py, pw, ph, 4);
+      ctx.fill();
+      // 头部护目镜
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.arc(px + pw / 2, py + ph / 2, 5, 0, Math.PI * 2);
+      ctx.fill();
+      // 枪口
+      const gx = facing ? px + pw - 2 : px;
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(gx, py + ph / 2 - 2, facing ? 12 : -12, 4);
     }
 
-    function drawBullet(b) { ctx.fillStyle = '#ffdd00'; ctx.shadowColor = '#ffdd00'; ctx.shadowBlur = 6; ctx.fillRect(b.x, b.y, b.w, b.h); ctx.shadowBlur = 0; }
+    function drawBullet(b) {
+      ctx.fillStyle = '#fff';
+      ctx.shadowColor = '#fff';
+      ctx.shadowBlur = 6;
+      ctx.fillRect(b.x, b.y, b.w, b.h);
+      ctx.shadowBlur = 0;
+    }
 
     function drawEnemy(e) {
-      ctx.fillStyle = e.type === 'tank' ? '#8b0000' : '#cc3333'; ctx.fillRect(e.x, e.y, e.w, e.h);
-      ctx.fillStyle = '#ff4444'; ctx.fillRect(e.x + 4, e.y + 4, e.w - 8, e.h - 8);
-      if (e.type === 'tank') { ctx.fillStyle = '#444'; ctx.fillRect(e.x - 2, e.y + 10, 5, 10); }
-      if (e.type === 'runner') { const lo = Math.sin(e.frame * 0.3) * 4; ctx.fillStyle = '#cc3333'; ctx.fillRect(e.x + 4, e.y + e.h, 8, 6 + lo); ctx.fillRect(e.x + e.w - 12, e.y + e.h, 8, 6 - lo); }
+      const fill = e.type === 'tank' ? '#3a3a3a' : '#2a2a2a';
+      ctx.fillStyle = fill;
+      ctx.beginPath();
+      ctx.roundRect(e.x, e.y, e.w, e.h, 3);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.fillRect(e.x + 4, e.y + 4, e.w - 8, 2); // 眼睛
+      if (e.type === 'runner') {
+        const lo = Math.sin(e.frame * 0.3) * 4;
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(e.x + 4, e.y + e.h, 6, 6 + lo);
+        ctx.fillRect(e.x + e.w - 10, e.y + e.h, 6, 6 - lo);
+      }
     }
 
-    function render() {
-      ctx.clearRect(0, 0, W, H); drawBg(); drawPlayer();
-      bullets.forEach(drawBullet); enemies.forEach(drawEnemy);
-      particles.forEach(p => { ctx.fillStyle = p.clr; ctx.globalAlpha = p.life / 20; ctx.fillRect(p.x, p.y, 3, 3); ctx.globalAlpha = 1; });
-      document.getElementById('hp').textContent = hp; document.getElementById('score').textContent = score;
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      drawBg();
+      drawPlayer();
+      state.bullets.forEach(drawBullet);
+      state.enemies.forEach(drawEnemy);
+      state.particles.forEach((p) => {
+        ctx.fillStyle = '#fff';
+        ctx.globalAlpha = p.life / 20;
+        ctx.fillRect(p.x, p.y, 3, 3);
+        ctx.globalAlpha = 1;
+      });
+      hpEl.textContent = state.hp;
+      scoreEl.textContent = state.score;
     }
 
-    document.addEventListener('keydown', e => { if (!playing) return; keys[e.code] = true; if (e.code === 'Space') e.preventDefault(); });
-    document.addEventListener('keyup', e => { keys[e.code] = false; });
+    function loop() {
+      update();
+      draw();
+      animId = requestAnimationFrame(loop);
+    }
 
-    function loop() { update(); render(); animId = requestAnimationFrame(loop); }
+    // ===== 输入 =====
+    document.addEventListener('keydown', (e) => {
+      if (!state.playing) return;
+      state.keys[e.code] = true;
+      if (e.code === 'Space') e.preventDefault();
+    });
+    document.addEventListener('keyup', (e) => { state.keys[e.code] = false; });
 
     document.getElementById('btn-start').addEventListener('click', () => { start(); if (!animId) loop(); });
     document.getElementById('overlay-btn').addEventListener('click', () => { start(); if (!animId) loop(); });
 
-    render(); animId = requestAnimationFrame(loop);
+    start();
   </script>
 </body>
 
