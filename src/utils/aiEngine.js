@@ -8,6 +8,7 @@ import {
 import { searchInterfaces } from '../data/interfaceCatalog.js'
 import { pruneHistory } from './tokenPrune.js'
 import { getLocalAnswer, isNavIntent, isInfoIntent } from './localAnswer.js'
+import { buildLocationContext, describeLocation } from './locationContext.js'
 
 /**
  * AI Engine — 对话 + 界面调用
@@ -62,6 +63,7 @@ export class AIEngine {
   constructor() {
     this.history = []
     this.initialized = false
+    this.location = '/'
   }
 
   init() {
@@ -71,6 +73,16 @@ export class AIEngine {
       content: AI_SYSTEM_PROMPT,
     })
     this.initialized = true
+  }
+
+  /** 构建请求 messages：基础 system 恒定在 index 0（前缀缓存友好），
+   *  当前位置上下文紧跟其后（每次实时注入，不写入持久化 history） */
+  buildRequestMessages() {
+    const locationMsg = {
+      role: 'system',
+      content: buildLocationContext(this.location),
+    }
+    return [this.history[0], locationMsg, ...this.history.slice(1)]
   }
 
   isConfigured() {
@@ -85,8 +97,9 @@ export class AIEngine {
    * 发送消息并返回 { text, action, candidates, status }
    * @param {string} userMessage
    */
-  async sendMessage(userMessage) {
+  async sendMessage(userMessage, location = '/') {
     this.init()
+    this.location = location
 
     this.history.push({ role: 'user', content: userMessage })
 
@@ -102,7 +115,7 @@ export class AIEngine {
 
     // 无 Key → 直接本地兜底
     if (!this.isConfigured()) {
-      const fb = this.getFallbackResponse(userMessage)
+      const fb = this.getFallbackResponse(userMessage, this.location)
       this.pushAssistant(fb.text)
       return fb
     }
@@ -124,7 +137,7 @@ export class AIEngine {
       // 失败则进入本地兜底
     }
 
-    const fb = this.getFallbackResponse(userMessage)
+    const fb = this.getFallbackResponse(userMessage, this.location)
     this.pushAssistant(fb.text)
     return fb
   }
@@ -162,6 +175,7 @@ export class AIEngine {
 
   /** 第 1 层：Function Calling 请求 */
   async requestFunctionCall() {
+    const messages = this.buildRequestMessages()
     const res = await fetch(AI_CONFIG.apiUrl, {
       method: 'POST',
       headers: {
@@ -170,7 +184,7 @@ export class AIEngine {
       },
       body: JSON.stringify({
         model: AI_CONFIG.model,
-        messages: this.history,
+        messages,
         temperature: 0.6,
         max_tokens: 500,
         tools: [NAVIGATE_TOOL_DEF],
@@ -187,7 +201,7 @@ export class AIEngine {
 
   /** 第 2 层：JSON 模式请求（在末尾用户消息追加 JSON 指令） */
   async requestJsonMode() {
-    const messages = this.history.map((m) => ({ ...m }))
+    const messages = this.buildRequestMessages().map((m) => ({ ...m }))
     const last = messages[messages.length - 1]
     if (last && last.role === 'user') {
       last.content =
@@ -217,8 +231,13 @@ export class AIEngine {
   /**
    * 本地兜底：先做界面模糊匹配，命中则跳转；多命中则给候选；否则走关键词回复
    */
-  getFallbackResponse(userMessage) {
+  getFallbackResponse(userMessage, location = '/') {
     const msg = String(userMessage).toLowerCase()
+
+    // 0) 当前位置类提问：无 Key/兜底时也能准确告知所在页面
+    if (/这是哪里|这是哪|现在在哪|在哪一页|这是什么页面|当前页面|这是什么地方/.test(msg)) {
+      return { text: `您现在正位于「${describeLocation(location)}」。有什么想了解的吗？`, action: null, candidates: [], status: 'none' }
+    }
 
     // 1) 本地界面匹配
     const matches = searchInterfaces(msg)
