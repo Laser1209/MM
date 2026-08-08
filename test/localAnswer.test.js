@@ -3,6 +3,9 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { isNavIntent, getLocalAnswer } from '../src/utils/localAnswer.js'
 
+// 测试用最小作品对象（不引入 worksData，避免 Vite 专属全局）；id 指向真实详情
+const AERIE = { id: 'ai-aerie', title: 'Aerie · 云栖', description: '本地优先的 AI 桌面伴侣' }
+
 test('isNavIntent: 导航意图命中', () => {
   assert.equal(isNavIntent('带我去Aerie这个项目'), true)
   assert.equal(isNavIntent('打开隐藏游戏库'), true)
@@ -43,4 +46,17 @@ test('getLocalAnswer: 有哪些作品 → 返回分类清单', () => {
 test('getLocalAnswer: 未知/无作品语境 → 返回 null（走 LLM）', () => {
   assert.equal(getLocalAnswer('你好呀'), null)
   assert.equal(getLocalAnswer('介绍一下这个项目'), null) // 未指名，交由 LLM 追问
+})
+
+test('getLocalAnswer: 在详情页问"这个项目/当前项目" → 返回当前作品', () => {
+  const r = getLocalAnswer('讲解一下这个项目', AERIE)
+  assert.ok(r, '应命中当前作品解答')
+  assert.ok(r.text.includes('Aerie') || r.text.includes('云栖'), '答案应包含当前作品名')
+  const r2 = getLocalAnswer('当前项目是什么？', AERIE)
+  assert.ok(r2 && r2.text.includes('Aerie'), '"当前项目"应解析到当前作品')
+})
+
+test('getLocalAnswer: 未定位到详情页时"这个项目"不误判为当前作品', () => {
+  assert.equal(getLocalAnswer('介绍一下这个项目'), null)
+  assert.equal(getLocalAnswer('这个项目是什么'), null)
 })

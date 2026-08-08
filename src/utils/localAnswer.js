@@ -23,6 +23,9 @@ const NAV_MARKERS = [
 const LIST_MARKERS = ['有哪些', '有什么', '几个项目', '什么作品', '哪些作品']
 const LIST_CONTEXT = ['作品', '项目']
 
+// "当前所在作品"指代标记：用户位于某作品详情页时，用这些词指向当前作品
+const CURRENT_REF_MARKERS = ['当前', '这个', '这里', '此页', '本页', '此作品', '本作品']
+
 function norm(s) {
   return String(s || '').toLowerCase().trim()
 }
@@ -43,6 +46,12 @@ export function isInfoIntent(msg) {
 function isListIntent(msg) {
   const m = norm(msg)
   return LIST_MARKERS.some((k) => m.includes(k)) && LIST_CONTEXT.some((c) => m.includes(c))
+}
+
+/** 是否为指向"当前所在作品"的指代（仅在已定位到某个作品详情页时有意义） */
+function isCurrentWorkReference(msg) {
+  const m = norm(msg)
+  return CURRENT_REF_MARKERS.some((k) => m.includes(k))
 }
 
 /**
@@ -115,10 +124,14 @@ function buildListAnswer() {
 /**
  * 本地确定性解答入口：
  *  - 内容解答 + 命中已知作品 → 返回 { text }（正文输出，不进 LLM）
+ *  - 内容解答 + 已定位到当前作品详情页 + 问"当前/这个/这里" → 返回当前作品 { text }
  *  - 有哪些作品 / 项目 → 返回 { text }（分类清单）
  *  - 其余 → 返回 null（交由 LLM）
+ *
+ * @param {string} msg 用户消息
+ * @param {object|null} currentWork 当前所在作品详情页对应的作品对象（来自路由），否则 null
  */
-export function getLocalAnswer(msg) {
+export function getLocalAnswer(msg, currentWork = null) {
   if (!msg) return null
   if (isNavIntent(msg)) return null // 导航意图不在此解答，交给导航链路
 
@@ -128,6 +141,10 @@ export function getLocalAnswer(msg) {
   if (isInfoIntent(msg)) {
     const matched = matchWork(msg)
     if (matched) return { text: buildProjectAnswer(matched.work) }
+    // 用户正在某作品详情页，且用"当前/这个/这里"指代当前作品
+    if (currentWork && isCurrentWorkReference(m)) {
+      return { text: buildProjectAnswer(currentWork) }
+    }
   }
   return null
 }

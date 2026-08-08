@@ -8,7 +8,8 @@ import {
 import { searchInterfaces } from '../data/interfaceCatalog.js'
 import { pruneHistory } from './tokenPrune.js'
 import { getLocalAnswer, isNavIntent, isInfoIntent } from './localAnswer.js'
-import { buildLocationContext, describeLocation } from './locationContext.js'
+import { buildLocationContext, describeLocation, workIdFromPath } from './locationContext.js'
+import { findWorkById } from '../data/worksData.js'
 
 /**
  * AI Engine — 对话 + 界面调用
@@ -80,7 +81,7 @@ export class AIEngine {
   buildRequestMessages() {
     const locationMsg = {
       role: 'system',
-      content: buildLocationContext(this.location),
+      content: buildLocationContext(this.location, this.currentWork),
     }
     return [this.history[0], locationMsg, ...this.history.slice(1)]
   }
@@ -100,6 +101,9 @@ export class AIEngine {
   async sendMessage(userMessage, location = '/') {
     this.init()
     this.location = location
+    // 解析当前所在作品：详情页时得到对应作品对象，供本地兜底把"当前/这个/这里"指向它
+    const workId = workIdFromPath(location)
+    this.currentWork = workId ? findWorkById(workId) || null : null
 
     this.history.push({ role: 'user', content: userMessage })
 
@@ -107,7 +111,7 @@ export class AIEngine {
     this.history = pruneHistory(this.history)
 
     // ---- 本地规则先行：内容解答类提问确定性命中，彻底杜绝误跳转（不进 LLM） ----
-    const local = getLocalAnswer(userMessage)
+    const local = getLocalAnswer(userMessage, this.currentWork)
     if (local) {
       this.pushAssistant(local.text)
       return { text: local.text, action: null, candidates: [], status: 'none' }
@@ -148,7 +152,7 @@ export class AIEngine {
     if (result?.status === 'navigate') {
       // 防御：内容解答类意图即使模型误判为导航，也降级为正文回答，绝不跳转
       if (!isNavIntent(userMessage) && isInfoIntent(userMessage)) {
-        const local = getLocalAnswer(userMessage)
+        const local = getLocalAnswer(userMessage, this.currentWork)
         const text = local ? local.text : parsed.text || '好的，我直接在正文为您讲解。'
         this.pushAssistant(text)
         return { text, action: null, candidates: [], status: 'none' }
