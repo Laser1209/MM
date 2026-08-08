@@ -39,11 +39,19 @@ test('getLocalAnswer: 讲解/架构 内容解答 → 返回作品信息', () => 
   assert.ok(r.text.includes('Aerie'), '答案应包含作品名')
 })
 
-test('getLocalAnswer: 有哪些作品 → 返回分类清单（isList 标记）', () => {
+test('getLocalAnswer: 有哪些作品 → 返回分类清单（isList 标记 + 前置饼图）', () => {
   const r = getLocalAnswer('你主人有哪些作品？')
   assert.ok(r, '应命中清单解答')
-  assert.ok(r.text.includes('人工智能开发'), '清单应含分类')
   assert.equal(r.isList, true, '应标记为清单解答，供引擎附作品总览卡片')
+  // 图表优先：文本应包含可被 MarkdownChart 解析的 echarts 饼图代码块
+  assert.ok(r.text.startsWith('```echarts'), '清单回答应优先给出图表代码块')
+  const m = r.text.match(/```echarts\n([\s\S]*?)\n```/)
+  assert.ok(m, '应能找到 echarts 代码块')
+  const spec = JSON.parse(m[1])
+  assert.equal(spec.protocol, 'echarts-lite/v1')
+  assert.equal(spec.type, 'pie')
+  assert.ok(r.text.includes('人工智能开发'), '图表数据应含分类')
+  assert.ok(r.text.includes('作品按分类如下'), '图表后应接文字清单')
 })
 
 test('getLocalAnswer: 未知/无作品语境 → 返回 null（走 LLM）', () => {

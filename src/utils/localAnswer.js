@@ -121,6 +121,22 @@ function buildListAnswer() {
   return lines.join('\n')
 }
 
+/** 作品分类占比饼图（echarts-lite/pie）——清单类回答先展示图表，再展示文字 */
+function buildCategoryChart() {
+  const byCat = {}
+  for (const w of WORK_METADATA) {
+    const title = CATEGORY_STRUCTURE[w.category]?.title || '其他'
+    byCat[title] = (byCat[title] || 0) + 1
+  }
+  const spec = {
+    protocol: 'echarts-lite/v1',
+    type: 'pie',
+    title: '作品分类占比',
+    data: [['分类', '数量'], ...Object.entries(byCat)],
+  }
+  return '```echarts\n' + JSON.stringify(spec) + '\n```'
+}
+
 /**
  * 本地确定性解答入口：
  *  - 内容解答 + 命中已知作品 → 返回 { text, work }（正文输出 + 对应作品，供引擎附加卡片）
@@ -136,7 +152,11 @@ export function getLocalAnswer(msg, currentWork = null) {
   if (isNavIntent(msg)) return null // 导航意图不在此解答，交给导航链路
 
   const m = norm(msg)
-  if (isListIntent(msg)) return { text: buildListAnswer(), isList: true }
+  if (isListIntent(msg)) {
+    // 图表优先：先展示分类占比饼图，再给出文字清单
+    const text = `${buildCategoryChart()}\n\n${buildListAnswer()}`
+    return { text, isList: true }
+  }
 
   if (isInfoIntent(msg)) {
     const matched = matchWork(msg)
