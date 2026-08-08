@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
-import { MessageCircle, X, Send, Trash2, ArrowRight } from 'lucide-react'
+import { MessageCircle, X, Send, Trash2, ArrowRight, Sparkles } from 'lucide-react'
 import { aiEngine } from '../../utils/aiEngine.js'
 import { SITE_CONFIG } from '../../config/siteConfig.js'
 import useLocalStorage from '../../hooks/useLocalStorage.js'
@@ -65,6 +65,56 @@ const MARKDOWN_COMPONENTS = {
   },
 }
 
+// 欢迎初始页——尚未开始真正对话（或清空后回归）时展示，配色/字体与整体主题一致
+function WelcomeView({ onPick }) {
+  return (
+    <div className="flex flex-col items-center justify-center h-full px-4 text-center animate-fade-up">
+      {/* 品牌头像 */}
+      <div
+        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 animate-scale-in"
+        style={{
+          background: 'linear-gradient(135deg, #5ed29c, #2f9b6f)',
+          boxShadow: '0 8px 30px rgba(94,210,156,0.35)',
+        }}
+      >
+        <span className="text-[#070b0a] font-bold text-2xl" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+          E
+        </span>
+      </div>
+
+      <h2
+        className="text-white text-lg font-bold mb-1.5"
+        style={{ fontFamily: 'DM Sans, sans-serif' }}
+      >
+        Hi，我是 <span style={{ color: '#5ed29c' }}>Etta</span>
+      </h2>
+
+      <p className="text-white/50 text-xs leading-relaxed mb-6 max-w-[260px]" style={{ fontFamily: 'Inter, sans-serif' }}>
+        你的专属 AI 助手，随时为你解答作品、技术栈与合作方式。
+      </p>
+
+      {/* 快捷提问卡片 */}
+      <div className="grid grid-cols-2 gap-2 w-full">
+        {SITE_CONFIG.aiSuggestions.map((s) => (
+          <button
+            key={s.label}
+            onClick={() => onPick(s)}
+            className="group flex items-center gap-2 px-3 py-2.5 rounded-xl text-left transition-all hover:scale-[1.02] hover:border-[#5ed29c]/40"
+            style={{
+              background: 'rgba(255,255,255,0.04)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              fontFamily: 'Inter, sans-serif',
+            }}
+          >
+            <Sparkles size={12} className="text-[#5ed29c] flex-shrink-0 transition-transform group-hover:rotate-12" />
+            <span className="block text-white/80 text-[11px] leading-snug min-w-0">{s.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
   const [internalOpen, setInternalOpen] = useState(false)
   const navigate = useNavigate()
@@ -83,6 +133,12 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
   ])
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
+  const clearTimerRef = useRef(null)
+  const [showDeleted, setShowDeleted] = useState(false)
+
+  // 展示欢迎初始页：仅在仍处于初始问候语（唯一一条 assistant 消息）时显示，
+  // 避免历史异常（如仅剩一条用户消息）时误显示欢迎页
+  const showWelcome = messages.length === 1 && messages[0]?.role === 'assistant'
 
   // Auto-scroll to bottom on new message
   useEffect(() => {
@@ -97,6 +153,13 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
       setTimeout(() => inputRef.current?.focus(), 300)
     }
   }, [open])
+
+  // 组件卸载时清除「已删除」气泡的定时器，避免卸载后仍触发 setState
+  useEffect(() => {
+    return () => {
+      if (clearTimerRef.current) clearTimeout(clearTimerRef.current)
+    }
+  }, [])
 
   const handleSend = useCallback(async () => {
     const trimmed = input.trim()
@@ -156,9 +219,13 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
     setMessages([
       {
         role: 'assistant',
-        content: '对话已清空。有什么新的问题想问我？',
+        content: '你好，我是 Etta，欢迎来到我主人的个人作品集。这里收录了我主人的平面设计、视频剪辑、三维建模和小游戏开发作品——你可以点击导航栏的 Works 浏览全部。有什么想了解的？',
       },
     ])
+    // 弹出「已删除」气泡，短暂展示后消失，并回归到最一开始的欢迎初始页
+    setShowDeleted(true)
+    if (clearTimerRef.current) clearTimeout(clearTimerRef.current)
+    clearTimerRef.current = setTimeout(() => setShowDeleted(false), 1800)
   }
 
   const handleSuggestion = (suggestion) => {
@@ -224,77 +291,99 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
 
           {/* Messages area */}
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-            {messages.map((msg, i) => (
-              <div
-                key={i}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
+            {/* 「已删除」气泡：点击清空后短暂弹出，随后消失并回归欢迎页 */}
+            {showDeleted && (
+              <div className="flex justify-center animate-scale-in">
                 <div
-                  className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm min-w-0 ${
-                    msg.role === 'user'
-                      ? 'bg-[#5ed29c] text-[#070b0a] rounded-br-sm'
-                      : 'bg-white/10 text-white/90 rounded-bl-sm'
-                  }`}
-                  style={{ fontFamily: 'Inter, sans-serif', lineHeight: 1.5, fontSize: '13px' }}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] text-white/75"
+                  style={{
+                    background: 'rgba(94,210,156,0.12)',
+                    border: '1px solid rgba(94,210,156,0.35)',
+                    fontFamily: 'Inter, sans-serif',
+                  }}
                 >
-                  {msg.role === 'assistant' ? (
-                    <ReactMarkdown components={MARKDOWN_COMPONENTS}>{msg.content}</ReactMarkdown>
-                  ) : (
-                    msg.content
-                  )}
-                  {/* 动作卡片：AI 确定要跳转时渲染 */}
-                  {msg.role === 'assistant' && msg.action && (
-                    <button
-                      onClick={() => goToInterface(msg.action)}
-                      className="mt-2 w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-all hover:scale-[1.02]"
-                      style={{ background: 'rgba(94,210,156,0.12)', border: '1px solid rgba(94,210,156,0.25)' }}
-                    >
-                      {msg.action.thumbnail && (
-                        <img
-                          src={msg.action.thumbnail}
-                          alt={msg.action.title}
-                          className="w-11 h-11 rounded-md object-cover flex-shrink-0 bg-black/30"
-                        />
-                      )}
-                      <span className="flex-1 min-w-0">
-                        <span className="block text-white text-xs font-semibold truncate" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-                          {msg.action.title}
-                        </span>
-                        <span className="block text-[#5ed29c] text-[10px] mt-0.5">前往界面</span>
-                      </span>
-                      <ArrowRight size={14} className="text-[#5ed29c] flex-shrink-0" />
-                    </button>
-                  )}
-                  {/* 候选列表：AI 拿不准时渲染，供用户选择 */}
-                  {msg.role === 'assistant' && msg.candidates?.length > 0 && (
-                    <div className="mt-2 space-y-1.5">
-                      {msg.candidates.map((cand) => (
-                        <button
-                          key={cand.id}
-                          onClick={() => goToInterface(cand)}
-                          className="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left transition-colors hover:bg-white/10"
-                          style={{ border: '1px solid rgba(255,255,255,0.12)' }}
-                        >
-                          {cand.thumbnail && (
-                            <img
-                              src={cand.thumbnail}
-                              alt={cand.title}
-                              className="w-9 h-9 rounded-md object-cover flex-shrink-0 bg-black/30"
-                            />
-                          )}
-                          <span className="flex-1 min-w-0">
-                            <span className="block text-white text-[11px] font-medium truncate" style={{ fontFamily: 'DM Sans, sans-serif' }}>
-                              {cand.title}
-                            </span>
-                          </span>
-                          <ArrowRight size={12} className="text-white/40 flex-shrink-0" />
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                  <Trash2 size={11} className="text-[#5ed29c]" />
+                  对话已删除，一切重新开始
                 </div>
               </div>
-            ))}
+            )}
+
+            {showWelcome ? (
+              /* 欢迎初始页：尚未开始真正对话时展示 */
+              <WelcomeView onPick={handleSuggestion} />
+            ) : (
+              messages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[85%] px-3 py-2 rounded-2xl text-sm min-w-0 ${
+                      msg.role === 'user'
+                        ? 'bg-[#5ed29c] text-[#070b0a] rounded-br-sm'
+                        : 'bg-white/10 text-white/90 rounded-bl-sm'
+                    }`}
+                    style={{ fontFamily: 'Inter, sans-serif', lineHeight: 1.5, fontSize: '13px' }}
+                  >
+                    {msg.role === 'assistant' ? (
+                      <ReactMarkdown components={MARKDOWN_COMPONENTS}>{msg.content}</ReactMarkdown>
+                    ) : (
+                      msg.content
+                    )}
+                    {/* 动作卡片：AI 确定要跳转时渲染 */}
+                    {msg.role === 'assistant' && msg.action && (
+                      <button
+                        onClick={() => goToInterface(msg.action)}
+                        className="mt-2 w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-all hover:scale-[1.02]"
+                        style={{ background: 'rgba(94,210,156,0.12)', border: '1px solid rgba(94,210,156,0.25)' }}
+                      >
+                        {msg.action.thumbnail && (
+                          <img
+                            src={msg.action.thumbnail}
+                            alt={msg.action.title}
+                            className="w-11 h-11 rounded-md object-cover flex-shrink-0 bg-black/30"
+                          />
+                        )}
+                        <span className="flex-1 min-w-0">
+                          <span className="block text-white text-xs font-semibold truncate" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                            {msg.action.title}
+                          </span>
+                          <span className="block text-[#5ed29c] text-[10px] mt-0.5">前往界面</span>
+                        </span>
+                        <ArrowRight size={14} className="text-[#5ed29c] flex-shrink-0" />
+                      </button>
+                    )}
+                    {/* 候选列表：AI 拿不准时渲染，供用户选择 */}
+                    {msg.role === 'assistant' && msg.candidates?.length > 0 && (
+                      <div className="mt-2 space-y-1.5">
+                        {msg.candidates.map((cand) => (
+                          <button
+                            key={cand.id}
+                            onClick={() => goToInterface(cand)}
+                            className="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-left transition-colors hover:bg-white/10"
+                            style={{ border: '1px solid rgba(255,255,255,0.12)' }}
+                          >
+                            {cand.thumbnail && (
+                              <img
+                                src={cand.thumbnail}
+                                alt={cand.title}
+                                className="w-9 h-9 rounded-md object-cover flex-shrink-0 bg-black/30"
+                              />
+                            )}
+                            <span className="flex-1 min-w-0">
+                              <span className="block text-white text-[11px] font-medium truncate" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+                                {cand.title}
+                              </span>
+                            </span>
+                            <ArrowRight size={12} className="text-white/40 flex-shrink-0" />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
 
             {/* Typing indicator */}
             {isTyping && (
@@ -311,21 +400,6 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
 
             <div ref={messagesEndRef} />
           </div>
-
-          {/* Suggestion chips (show when few messages) */}
-          {messages.length <= 1 && (
-            <div className="px-4 pb-2 flex flex-wrap gap-1.5">
-              {SITE_CONFIG.aiSuggestions.map((s, i) => (
-                <button
-                  key={i}
-                  onClick={() => handleSuggestion(s)}
-                  className="px-2.5 py-1 rounded-full text-[11px] bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/80 transition-colors"
-                >
-                  {s.label}
-                </button>
-              ))}
-            </div>
-          )}
 
           {/* Input area */}
           <div className="px-4 py-3 border-t border-white/10">
