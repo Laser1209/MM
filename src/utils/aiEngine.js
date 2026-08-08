@@ -5,7 +5,7 @@ import {
   extractActionFromToolCall,
   extractActionFromJson,
 } from './actionParser.js'
-import { searchInterfaces } from '../data/interfaceCatalog.js'
+import { searchInterfaces, findInterfaceById } from '../data/interfaceCatalog.js'
 import { pruneHistory } from './tokenPrune.js'
 import { getLocalAnswer, isNavIntent, isInfoIntent } from './localAnswer.js'
 import { buildLocationContext, describeLocation, workIdFromPath } from './locationContext.js'
@@ -87,7 +87,28 @@ export class AIEngine {
   }
 
   isConfigured() {
-    return AI_CONFIG.apiKey && AI_CONFIG.apiKey !== 'YOUR_DEEPSEEK_API_KEY'
+    return Boolean(AI_CONFIG.apiKey) && AI_CONFIG.apiKey !== 'YOUR_DEEPSEEK_API_KEY'
+  }
+
+  /** 根据界面 id 生成"前往界面"卡片（供内容解答后附在末尾） */
+  interfaceCardById(id) {
+    const itf = findInterfaceById(id)
+    return itf ? { id: itf.id, title: itf.title, route: itf.route, thumbnail: itf.thumbnail || '' } : null
+  }
+
+  /**
+   * 内容解答响应组合：正文 + 可选引导附言 + 可选界面卡片。
+   * 规则：能确定对应界面（某个作品/作品总览）时，附上卡片并在正文结尾加一句
+   * "需要我带您过去看看吗？"作为软引导——绝不做主动跳转。
+   */
+  contentResponse(local) {
+    const action = local?.work
+      ? this.interfaceCardById(local.work.id)
+      : local?.isList
+        ? this.interfaceCardById('works-all')
+        : null
+    const text = action ? `${local.text}\n\n需要我带您过去看看吗？` : local.text
+    return { text, action }
   }
 
   pushAssistant(text) {
@@ -113,8 +134,9 @@ export class AIEngine {
     // ---- 本地规则先行：内容解答类提问确定性命中，彻底杜绝误跳转（不进 LLM） ----
     const local = getLocalAnswer(userMessage, this.currentWork)
     if (local) {
-      this.pushAssistant(local.text)
-      return { text: local.text, action: null, candidates: [], status: 'none' }
+      const { text, action } = this.contentResponse(local)
+      this.pushAssistant(text)
+      return { text, action, candidates: [], status: 'none' }
     }
 
     // 无 Key → 直接本地兜底
@@ -153,7 +175,12 @@ export class AIEngine {
       // 防御：内容解答类意图即使模型误判为导航，也降级为正文回答，绝不跳转
       if (!isNavIntent(userMessage) && isInfoIntent(userMessage)) {
         const local = getLocalAnswer(userMessage, this.currentWork)
-        const text = local ? local.text : parsed.text || '好的，我直接在正文为您讲解。'
+        if (local) {
+          const { text, action } = this.contentResponse(local)
+          this.pushAssistant(text)
+          return { text, action, candidates: [], status: 'none' }
+        }
+        const text = parsed.text || '好的，我直接在正文为您讲解。'
         this.pushAssistant(text)
         return { text, action: null, candidates: [], status: 'none' }
       }

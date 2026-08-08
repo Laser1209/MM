@@ -23,12 +23,14 @@ test('getLocalAnswer: 具体项目内容解答 → 返回作品信息', () => {
   const r = getLocalAnswer('Aerie · 云栖是什么项目？')
   assert.ok(r, '应命中本地作品解答')
   assert.ok(r.text.includes('Aerie') || r.text.includes('云栖'), '答案应包含作品名')
+  assert.equal(r.work?.id, 'ai-aerie', '应附带对应作品，供引擎生成界面卡片')
 })
 
 test('getLocalAnswer: 讲一讲某个作品 → 返回作品信息', () => {
   const r = getLocalAnswer('Braintoss 这个工具是干什么的')
   assert.ok(r, '应命中本地作品解答')
   assert.ok(r.text.includes('Braintoss'), '答案应包含作品名')
+  assert.ok(r.work && r.work.id === 'ai-braintoss', '应附带对应作品')
 })
 
 test('getLocalAnswer: 讲解/架构 内容解答 → 返回作品信息', () => {
@@ -37,10 +39,11 @@ test('getLocalAnswer: 讲解/架构 内容解答 → 返回作品信息', () => 
   assert.ok(r.text.includes('Aerie'), '答案应包含作品名')
 })
 
-test('getLocalAnswer: 有哪些作品 → 返回分类清单', () => {
+test('getLocalAnswer: 有哪些作品 → 返回分类清单（isList 标记）', () => {
   const r = getLocalAnswer('你主人有哪些作品？')
   assert.ok(r, '应命中清单解答')
   assert.ok(r.text.includes('人工智能开发'), '清单应含分类')
+  assert.equal(r.isList, true, '应标记为清单解答，供引擎附作品总览卡片')
 })
 
 test('getLocalAnswer: 未知/无作品语境 → 返回 null（走 LLM）', () => {

@@ -123,9 +123,9 @@ function buildListAnswer() {
 
 /**
  * 本地确定性解答入口：
- *  - 内容解答 + 命中已知作品 → 返回 { text }（正文输出，不进 LLM）
- *  - 内容解答 + 已定位到当前作品详情页 + 问"当前/这个/这里" → 返回当前作品 { text }
- *  - 有哪些作品 / 项目 → 返回 { text }（分类清单）
+ *  - 内容解答 + 命中已知作品 → 返回 { text, work }（正文输出 + 对应作品，供引擎附加卡片）
+ *  - 内容解答 + 已定位到当前作品详情页 + 问"当前/这个/这里" → 返回 { text, work }
+ *  - 有哪些作品 / 项目 → 返回 { text, isList: true }（分类清单）
  *  - 其余 → 返回 null（交由 LLM）
  *
  * @param {string} msg 用户消息
@@ -136,14 +136,14 @@ export function getLocalAnswer(msg, currentWork = null) {
   if (isNavIntent(msg)) return null // 导航意图不在此解答，交给导航链路
 
   const m = norm(msg)
-  if (isListIntent(msg)) return { text: buildListAnswer() }
+  if (isListIntent(msg)) return { text: buildListAnswer(), isList: true }
 
   if (isInfoIntent(msg)) {
     const matched = matchWork(msg)
-    if (matched) return { text: buildProjectAnswer(matched.work) }
+    if (matched) return { text: buildProjectAnswer(matched.work), work: matched.work }
     // 用户正在某作品详情页，且用"当前/这个/这里"指代当前作品
     if (currentWork && isCurrentWorkReference(m)) {
-      return { text: buildProjectAnswer(currentWork) }
+      return { text: buildProjectAnswer(currentWork), work: currentWork }
     }
   }
   return null
