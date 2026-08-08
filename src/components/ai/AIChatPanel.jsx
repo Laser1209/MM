@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import { MessageCircle, X, Send, Trash2, ArrowRight, Sparkles } from 'lucide-react'
 import { aiEngine } from '../../utils/aiEngine.js'
@@ -118,6 +118,7 @@ function WelcomeView({ onPick }) {
 export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
   const [internalOpen, setInternalOpen] = useState(false)
   const navigate = useNavigate()
+  const location = useLocation()
   const open = externalOpen !== undefined ? externalOpen : internalOpen
   const setOpen = (val) => {
     if (onOpenChange) onOpenChange(val)
@@ -172,7 +173,7 @@ export default function AIChatPanel({ open: externalOpen, onOpenChange }) {
 
     // Get AI response (may include an interface action / candidates)
     try {
-      const res = await aiEngine.sendMessage(trimmed)
+      const res = await aiEngine.sendMessage(trimmed, location.pathname)
       const assistantMsg = {
         role: 'assistant',
         content: res.text,
