@@ -289,6 +289,11 @@
     function loop() {
       update();
       draw();
+      // 游戏结束（胜利/失败）后停止动画循环，避免无谓的性能消耗
+      if (!state.playing || state.over || state.won) {
+        animId = null;
+        return;
+      }
       animId = requestAnimationFrame(loop);
     }
 
